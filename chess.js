@@ -2,6 +2,17 @@
 
 const GRID_SIZE = 8;
 
+let chessboard = [
+    ["t2", "c2", "a2", "k2", "q2", "a2", "c2", "t2"],
+    ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
+    ["t1", "c1", "a1", "q1", "k1", "a1", "c1", "t1"]
+]
+
 document.body.onload = function() {
     let grid = createGridElement(GRID_SIZE);
     document.getElementById("grid-container").appendChild(grid);
@@ -19,6 +30,9 @@ function createGridElement(gridSize) {
         
         for(let col = 0; col < gridSize; col++) {
             let td = document.createElement("td");
+            if(chessboard[row][col] != "") {
+                td.innerText = chessboard[row][col].substr(0, 1);
+            }
 
             // Give the right color to the cell
             if(firstTRCellWhite)
