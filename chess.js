@@ -1,3 +1,5 @@
+"use strict";
+
 const GRID_SIZE = 8;
 
 document.body.onload = function() {
