@@ -203,13 +203,14 @@ function getPossibleMovesForPiece(row, col) {
     }
 
     let pieceType = cellContents[0];
-    let playerCode = Number(cellContents[1]);
+    // TODO this is a string, I foresee errors. Should be an enum or something else
+    let playerCode = cellContents[1];
     
     let arrValidCells = [];
 
     if(pieceType === PieceTypeEnum.Pawn) {
         // Player one is the player "below", so the pawns can only go above
-        if(playerCode === 1) {
+        if(playerCode == "1") {
             // If pawn can go above one step
             if(row > 0) {
                 let cellContents;
