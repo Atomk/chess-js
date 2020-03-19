@@ -157,6 +157,10 @@ function handleCellClick(e) {
 
                     gameState = GameStateEnum.SelectDestination;
                 }
+            } else {
+                // Reset selection
+                selectedPiece.row = -1;
+                selectedPiece.col = -1;
             }
         }
     }
