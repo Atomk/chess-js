@@ -240,6 +240,73 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
     }
+    else if(pieceType === PieceTypeEnum.Tower) {
+        let i;
+        
+        // Bottom
+        i = row+1;
+        while(i <= GRID_SIZE-1) {
+            // If cell is empty
+            if(chessboard[i][col] === "") {
+                arrValidCells.push(new PossibleMove(i, col, false));
+            } else {
+                // If cell contains a friendly unit
+                if(chessboard[i][col][1] == playerCode) {
+                    break;
+                } else {
+                    // Cell contains an enemy unit
+                    arrValidCells.push(new PossibleMove(i, col, true));
+                    break;
+                }
+            }
+            i++;
+        }
+        // Top
+        i = row-1;
+        while(i >= 0) {
+            if(chessboard[i][col] === "") {
+                arrValidCells.push(new PossibleMove(i, col, false));
+            } else {
+                if(chessboard[i][col][1] == playerCode) {
+                    break;
+                } else {
+                    arrValidCells.push(new PossibleMove(i, col, true));
+                    break;
+                }
+            }
+            i--;
+        }
+        // Right
+        i = col+1;
+        while(i <= GRID_SIZE-1) {
+            if(chessboard[row][i] === "") {
+                arrValidCells.push(new PossibleMove(row, i, false));
+            } else {
+                if(chessboard[row][i][1] == playerCode) {
+                    break;
+                } else {
+                    arrValidCells.push(new PossibleMove(row, i, true));
+                    break;
+                }
+            }
+            i++;
+        }
+        // Left
+        i = col-1;
+        while(i >= 0) {
+            if(chessboard[row][i] === "") {
+                arrValidCells.push(new PossibleMove(row, i, false));
+            } else {
+                if(chessboard[row][i][1] == playerCode) {
+                    break;
+                } else {
+                    arrValidCells.push(new PossibleMove(row, i, true));
+                    break;
+                }
+            }
+            i--;
+        }
+    }
 
     return arrValidCells;
 }
