@@ -109,6 +109,12 @@ function handleCellClick(e) {
             console.log(`Cell ${row}-${col}. Empty`);
         }
     } else if(gameState === GameStateEnum.SelectDestination) {
+        // If user clicks again on the piece they're trying to move, do nothing
+        if(Number(row) === selectedPiece.row && Number(col) === selectedPiece.col) {
+            console.log("You have already selected this piece.")
+            return;
+        }
+
         setDisplayDestinationActive(false);
 
         let isValidMove = false;
