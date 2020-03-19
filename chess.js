@@ -14,16 +14,16 @@ let chessboard = [
 ]
 
 document.body.onload = function() {
-    let grid = createGridElement(GRID_SIZE);
-    document.getElementById("grid-container").appendChild(grid);
+    let table = createChessboardTableHTML(GRID_SIZE);
+    document.getElementById("grid-container").appendChild(table);
 }
 
-function createGridElement(gridSize) {
+function createChessboardTableHTML(gridSize) {
     let table = document.createElement("table");
 
-    // Determines color of the first cell in the row
-    // The cell up left should be white
-    let firstTRCellWhite = true;
+    // Determines color of the first cell in the row. It's initialized
+    // with TRUE because the top-left cell in the chessboard should be white
+    let isFirstCellInRowWhite = true;
 
     for(let row = 0; row < gridSize; row++) {
         let tr = document.createElement("tr");
@@ -31,11 +31,11 @@ function createGridElement(gridSize) {
         for(let col = 0; col < gridSize; col++) {
             let td = document.createElement("td");
             if(chessboard[row][col] != "") {
-                td.innerText = chessboard[row][col].substr(0, 1);
+                td.innerText = chessboard[row][col][0];
             }
 
-            // Give the right color to the cell
-            if(firstTRCellWhite)
+            // Makes cells with an even column index black or white
+            if(isFirstCellInRowWhite)
                 td.className = col % 2 === 0 ? "cell-white" : "cell-black";
             else
                 td.className = col % 2 === 0 ? "cell-black" : "cell-white";
@@ -44,7 +44,7 @@ function createGridElement(gridSize) {
         }
         
         table.appendChild(tr);
-        firstTRCellWhite = !firstTRCellWhite;
+        isFirstCellInRowWhite = !isFirstCellInRowWhite;
     }
 
     return table;
