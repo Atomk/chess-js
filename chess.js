@@ -96,7 +96,10 @@ function handleCellClick(e) {
     
             if(playerCode === 1) {
                 arrPossibleMoves = getPossibleMovesForPiece(row, col);
-                
+                if(arrPossibleMoves.length === 0) {
+                    console.log("This piece cannot move anywhere...");
+                }
+
                 setDisplayDestinationActive(true);
 
                 selectedPiece.row = row;
@@ -149,7 +152,10 @@ function handleCellClick(e) {
                 // This is the same code as above, DRY
                 if(playerCode === 1) {
                     arrPossibleMoves = getPossibleMovesForPiece(row, col);
-                                        
+                    if(arrPossibleMoves.length === 0) {
+                        console.log("This piece cannot move anywhere...");
+                    }
+
                     setDisplayDestinationActive(true);
 
                     selectedPiece.row = row;
