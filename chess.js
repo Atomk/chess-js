@@ -219,13 +219,13 @@ function getPossibleMovesForPiece(row, col) {
                     }
                 }
                 
-                // If cell above there are one or two free cells
+                // If cell above is free
                 cellContents = chessboard[row-1][col];
-                
                 if(cellContents === "") {
                     arrValidCells.push(new PossibleMove(row-1, col, false));
 
-                    if(row-2 >= 0) {
+                    // If the pawn is at its starting position and has two free cells above
+                    if(row == GRID_SIZE-2) {
                         cellContents = chessboard[row-2][col];
                         if(cellContents === "")
                             arrValidCells.push(new PossibleMove(row-2, col, false));
