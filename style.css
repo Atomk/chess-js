@@ -8,12 +8,12 @@ h1 {
 
 table {
     margin: 0 auto;
-    border: 1px dotted #333;
+    border-collapse: collapse;
 }
 
 td {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
 }
 
 .cell-black {
