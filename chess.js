@@ -538,6 +538,8 @@ function getPossibleMovesForPiece(row, col) {
     return arrValidCells;
 }
 
+/** Returns true if the row and column indexes passed as arguments
+ * are in-bounds in the chessboard matrix. */
 function checkRowColValid(row, col) {
     return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
 }
