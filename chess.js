@@ -480,5 +480,5 @@ function getPossibleMovesForPiece(row, col) {
 }
 
 function checkRowColValid(row, col) {
-    return (row >= 0 || row <= MAX_ROW || col >= 0 || col <= MAX_COL);
+    return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
 }
