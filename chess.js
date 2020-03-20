@@ -392,6 +392,67 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
     }
+    else if(pieceType === PieceTypeEnum.Bishop) {
+        let r, c;
+        
+        // Up-left
+        r = row-1;
+        c = col-1;
+        while(checkRowColValid(r, c)) {
+            if(chessboard[r][c] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(r, c, false));
+            } else {
+                if(chessboard[r][c][1] != playerCode) {
+                    arrValidCells.push(new PossibleMove(r, c, true));
+                }
+                // This is not a free cell, so the piece cannot move anymore in this direction
+                break;
+            }
+            r--, c--;
+        }
+        // Up-right
+        r = row-1;
+        c = col+1;
+        while(checkRowColValid(r, c)) {
+            if(chessboard[r][c] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(r, c, false));
+            } else {
+                if(chessboard[r][c][1] != playerCode) {
+                    arrValidCells.push(new PossibleMove(r, c, true));
+                }
+                break;
+            }
+            r--, c++;
+        }
+        // Bottom-left
+        r = row+1;
+        c = col-1;
+        while(checkRowColValid(r, c)) {
+            if(chessboard[r][c] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(r, c, false));
+            } else {
+                if(chessboard[r][c][1] != playerCode) {
+                    arrValidCells.push(new PossibleMove(r, c, true));
+                }
+                break;
+            }
+            r++, c--;
+        }
+        // Bottom-right
+        r = row+1;
+        c = col+1;
+        while(checkRowColValid(r, c)) {
+            if(chessboard[r][c] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(r, c, false));
+            } else {
+                if(chessboard[r][c][1] != playerCode) {
+                    arrValidCells.push(new PossibleMove(r, c, true));
+                }
+                break;
+            }
+            r++, c++;
+        }
+    }
     else if(pieceType === PieceTypeEnum.King) {
         let r, c;
         
