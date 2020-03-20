@@ -262,7 +262,7 @@ function getPossibleMovesForPiece(row, col) {
         
         // Bottom
         i = row+1;
-        while(i <= GRID_SIZE-1) {
+        while(i <= MAX_ROW) {
             // If cell is empty
             if(chessboard[i][col] === "") {
                 arrValidCells.push(new PossibleMove(i, col, false));
@@ -295,7 +295,7 @@ function getPossibleMovesForPiece(row, col) {
         }
         // Right
         i = col+1;
-        while(i <= GRID_SIZE-1) {
+        while(i <= MAX_COL) {
             if(chessboard[row][i] === "") {
                 arrValidCells.push(new PossibleMove(row, i, false));
             } else {
@@ -334,7 +334,7 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
         // Up right
-        if(row-2 >= 0 && col+1 <= GRID_SIZE-1) {
+        if(row-2 >= 0 && col+1 <= MAX_COL) {
             if(chessboard[row-2][col+1] === "") {
                 arrValidCells.push(new PossibleMove(row-2, col+1, false));
             } else if(chessboard[row-2][col+1][1] != playerCode) {
@@ -342,7 +342,7 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
         // Bottom left
-        if(row+2 <= GRID_SIZE-1 && col-1 >= 0) {
+        if(row+2 <= MAX_ROW && col-1 >= 0) {
             if(chessboard[row+2][col-1] === "") {
                 arrValidCells.push(new PossibleMove(row+2, col-1, false));
             } else if(chessboard[row+2][col-1][1] != playerCode) {
@@ -350,7 +350,7 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
         // Bottom right
-        if(row+2 <= GRID_SIZE-1 && col+1 <= GRID_SIZE-1) {
+        if(row+2 <= MAX_ROW && col+1 <= MAX_COL) {
             if(chessboard[row+2][col+1] === "") {
                 arrValidCells.push(new PossibleMove(row+2, col+1, false));
             } else if(chessboard[row+2][col+1][1] != playerCode) {
@@ -358,7 +358,7 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
         // Left up
-        if(row+1 <= GRID_SIZE-1 && col-2 >= 0) {
+        if(row+1 <= MAX_ROW && col-2 >= 0) {
             if(chessboard[row+1][col-2] === "") {
                 arrValidCells.push(new PossibleMove(row+1, col-2, false));
             } else if(chessboard[row+1][col-2][1] != playerCode) {
@@ -374,7 +374,7 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
         // Right up
-        if(row+1 <= GRID_SIZE-1 && col+2 <= GRID_SIZE-1) {
+        if(row+1 <= MAX_ROW && col+2 <= MAX_COL) {
             if(chessboard[row+1][col+2] === "") {
                 arrValidCells.push(new PossibleMove(row+1, col+2, false));
             } else if(chessboard[row+1][col+2][1] != playerCode) {
@@ -382,7 +382,7 @@ function getPossibleMovesForPiece(row, col) {
             }
         }
         // Right down
-        if(row-1 >= 0 && col+2 <= GRID_SIZE-1) {
+        if(row-1 >= 0 && col+2 <= MAX_COL) {
             if(chessboard[row-1][col+2] === "") {
                 arrValidCells.push(new PossibleMove(row-1, col+2, false));
             } else if(chessboard[row-1][col+2][1] != playerCode) {
@@ -480,5 +480,5 @@ function getPossibleMovesForPiece(row, col) {
 }
 
 function checkRowColValid(row, col) {
-    return (row >= 0 || row < GRID_SIZE-1 || col >= 0 || col < GRID_SIZE);
+    return (row >= 0 || row <= MAX_ROW || col >= 0 || col <= MAX_COL);
 }
