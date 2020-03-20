@@ -151,7 +151,7 @@ function handleCellClick(e) {
         let isValidMove = false;
         // Check if the selected cell is a valid destination
         for(let i=0; i<arrPossibleMoves.length; i++) {
-            if(arrPossibleMoves[i].row == row && arrPossibleMoves[i].col == col) {
+            if(arrPossibleMoves[i].row === row && arrPossibleMoves[i].col === col) {
                 isValidMove = true;
                 // If the destination is an empty cell, move the piece there
                 //if(chessboard[row][col] === EMPTY_TILE) {
@@ -268,7 +268,7 @@ function getPossibleMovesForPiece(row, col) {
                     arrValidCells.push(new PossibleMove(row-1, col, false));
 
                     // If the pawn is at its starting position and has two free cells above
-                    if(row == MAX_ROW-1) {
+                    if(row === MAX_ROW-1) {
                         cellContents = chessboard[row-2][col];
                         if(cellContents === EMPTY_TILE)
                             arrValidCells.push(new PossibleMove(row-2, col, false));
