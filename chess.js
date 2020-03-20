@@ -19,6 +19,12 @@ Object.freeze(PieceTypeEnum);
 Object.freeze(GameStateEnum);
 
 const GRID_SIZE = 8;
+// I made these because sometimes I forget to check array indexes
+// against "GRID_SIZE-1" instead of just "GRID_SIZE"
+// There are two different variables because in the future
+// I want to support different grid sizes
+const MAX_COL = GRID_SIZE - 1;
+const MAX_ROW = GRID_SIZE - 1;
 
 let gameState = GameStateEnum.SelectPiece;
 let selectedPiece = {
