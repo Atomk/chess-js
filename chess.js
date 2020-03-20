@@ -28,28 +28,42 @@ const MAX_ROW = GRID_SIZE - 1;
 
 const EMPTY_TILE = "";
 
-let gameState = GameStateEnum.SelectPiece;
+let gameState;
 let selectedPiece = {
     row: -99,
     col: -99
 };
 
 let arrPossibleMoves;
-
-let chessboard = [
-    ["t2", "h2", "b2", "k2", "q2", "b2", "h2", "t2"],
-    ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
-    ["t1", "h1", "b1", "q1", "k1", "b1", "h1", "t1"]
-]
+let chessboard;
 
 document.body.onload = function() {
+    // Must be called before everything else because it initializes the chessboard
+    initGame();
+
     let table = createChessboardTableHTML(GRID_SIZE);
     document.getElementById("grid-container").appendChild(table);
+}
+
+function initGame() {
+    chessboard = [
+        ["t2", "h2", "b2", "k2", "q2", "b2", "h2", "t2"],
+        ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
+        [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
+        [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
+        [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
+        [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
+        ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
+        ["t1", "h1", "b1", "q1", "k1", "b1", "h1", "t1"]
+    ];
+
+    gameState = GameStateEnum.SelectPiece;
+    resetSelectedPiece();
+}
+
+function resetSelectedPiece() {
+    selectedPiece.row = -1;
+    selectedPiece.col = -1;
 }
 
 function createChessboardTableHTML(gridSize) {
@@ -153,9 +167,7 @@ function handleCellClick(e) {
         }
 
         if(!isValidMove) {
-            // Reset selection
-            selectedPiece.row = -1;
-            selectedPiece.col = -1;
+            resetSelectedPiece();
 
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
