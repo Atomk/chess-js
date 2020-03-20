@@ -318,6 +318,72 @@ function getPossibleMovesForPiece(row, col) {
             i--;
         }
     }
+    else if(pieceType === PieceTypeEnum.Horse) {
+        // Up left
+        if(row-2 >= 0 && col-1 >= 0) {
+            if(chessboard[row-2][col-1] === "") {
+                arrValidCells.push(new PossibleMove(row-2, col-1, false));
+            } else if(chessboard[row-2][col-1][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row-2, col-1, true));
+            }
+        }
+        // Up right
+        if(row-2 >= 0 && col+1 <= GRID_SIZE-1) {
+            if(chessboard[row-2][col+1] === "") {
+                arrValidCells.push(new PossibleMove(row-2, col+1, false));
+            } else if(chessboard[row-2][col+1][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row-2, col+1, true));
+            }
+        }
+        // Bottom left
+        if(row+2 <= GRID_SIZE-1 && col-1 >= 0) {
+            if(chessboard[row+2][col-1] === "") {
+                arrValidCells.push(new PossibleMove(row+2, col-1, false));
+            } else if(chessboard[row+2][col-1][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row+2, col-1, true));
+            }
+        }
+        // Bottom right
+        if(row+2 <= GRID_SIZE-1 && col+1 <= GRID_SIZE-1) {
+            if(chessboard[row+2][col+1] === "") {
+                arrValidCells.push(new PossibleMove(row+2, col+1, false));
+            } else if(chessboard[row+2][col+1][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row+2, col+1, true));
+            }
+        }
+        // Left up
+        if(row+1 <= GRID_SIZE-1 && col-2 >= 0) {
+            if(chessboard[row+1][col-2] === "") {
+                arrValidCells.push(new PossibleMove(row+1, col-2, false));
+            } else if(chessboard[row+1][col-2][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row+1, col-2, true));
+            }
+        }
+        // Left down
+        if(row-1 >= 0 && col-2 >= 0) {
+            if(chessboard[row-1][col-2] === "") {
+                arrValidCells.push(new PossibleMove(row-1, col-2, false));
+            } else if(chessboard[row-1][col-2][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row-1, col-2, true));
+            }
+        }
+        // Right up
+        if(row+1 <= GRID_SIZE-1 && col+2 <= GRID_SIZE-1) {
+            if(chessboard[row+1][col+2] === "") {
+                arrValidCells.push(new PossibleMove(row+1, col+2, false));
+            } else if(chessboard[row+1][col+2][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row+1, col+2, true));
+            }
+        }
+        // Right down
+        if(row-1 >= 0 && col+2 <= GRID_SIZE-1) {
+            if(chessboard[row-1][col+2] === "") {
+                arrValidCells.push(new PossibleMove(row-1, col+2, false));
+            } else if(chessboard[row-1][col+2][1] != playerCode) {
+                arrValidCells.push(new PossibleMove(row-1, col+2, true));
+            }
+        }
+    }
 
     return arrValidCells;
 }
