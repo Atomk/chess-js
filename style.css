@@ -38,3 +38,28 @@ td {
 .cell-white {
     background-color: #dadada;
 }
+
+.cell-move-free,
+.cell-move-enemy {
+    cursor: pointer;
+    /* Allows ::after to be absolute position */
+    position: relative;
+}
+.cell-move-free::after,
+.cell-move-enemy::after {
+    content: " ";
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    /* Remove element from page flow */
+    position: absolute;
+    /* Centers square on cell */
+    top: 0;
+    left: 0;
+}
+.cell-move-free::after {
+    background-color: chartreuse;
+}
+.cell-move-enemy::after {
+    background-color: crimson;
+}
