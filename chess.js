@@ -34,8 +34,8 @@ const EMPTY_TILE = "";
 
 let gameState;
 let selectedPiece = {
-    row: -99,
-    col: -99
+    row: -1,
+    col: -1
 };
 
 let arrPossibleMoves;
