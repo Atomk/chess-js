@@ -7,8 +7,7 @@ const PieceTypeEnum = {
     "Bishop": "b",
     "Tower": "t",
     "King": "k",
-    "Queen": "q",
-    "None": ""
+    "Queen": "q"
 };
 const GameStateEnum = {
     "SelectPiece": 0,
