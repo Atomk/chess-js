@@ -33,14 +33,13 @@ const MAX_ROW = GRID_SIZE - 1;
 const EMPTY_TILE = "";
 
 let gameState;
+let activePlayer;
+let chessboard;
+let arrPossibleMoves;
 let selectedPiece = {
     row: -1,
     col: -1
 };
-
-let arrPossibleMoves;
-let activePlayer;
-let chessboard;
 
 document.body.onload = function() {
     // Must be called before everything else because it initializes the chessboard
@@ -147,7 +146,7 @@ function handleCellClick(e) {
         setDisplayDestinationActive(false);
 
         let isValidMove = false;
-        // Check if the selected cell is a valid destination
+        // Check if the selected piece can be moved in the clicked cell
         for(let i=0; i<arrPossibleMoves.length; i++) {
             if(arrPossibleMoves[i].row === row && arrPossibleMoves[i].col === col) {
                 isValidMove = true;
@@ -165,7 +164,6 @@ function handleCellClick(e) {
         } else {
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
-                let pieceType = cellContents[0];
                 let pieceOwner = cellContents[1];
                 // TODO This is the same code as above, DRY
                 if(pieceOwner === activePlayer) {
@@ -544,6 +542,9 @@ function getPossibleMovesForPiece(row, col) {
                 arrValidCells.push(new PossibleMove(r, c, true));
             }
         }
+    }
+    else {
+        console.error("Unrecognized piece type: " + pieceType);
     }
 
     return arrValidCells;
