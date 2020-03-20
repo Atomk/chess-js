@@ -260,70 +260,66 @@ function getPossibleMovesForPiece(row, col) {
         }
     }
     else if(pieceType === PieceTypeEnum.Tower) {
-        let i;
+        let r, c;
         
         // Bottom
-        i = row+1;
-        while(i <= MAX_ROW) {
+        r = row+1;
+        while(r <= MAX_ROW) {
             // If cell is empty
-            if(chessboard[i][col] === EMPTY_TILE) {
-                arrValidCells.push(new PossibleMove(i, col, false));
+            if(chessboard[r][col] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(r, col, false));
             } else {
-                // If cell contains a friendly unit
-                if(chessboard[i][col][1] == playerCode) {
-                    break;
-                } else {
-                    // Cell contains an enemy unit
-                    arrValidCells.push(new PossibleMove(i, col, true));
-                    break;
+                // If cell contains an enemy unit
+                if(chessboard[r][col][1] !== playerCode) {
+                    arrValidCells.push(new PossibleMove(r, col, true));
                 }
+                // In any case this cell is not empty, so the tower
+                // cannot move beyond this point in this direction
+                break;
             }
-            i++;
+            r++;
         }
+
         // Top
-        i = row-1;
-        while(i >= 0) {
-            if(chessboard[i][col] === EMPTY_TILE) {
-                arrValidCells.push(new PossibleMove(i, col, false));
+        r = row-1;
+        while(r >= 0) {
+            if(chessboard[r][col] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(r, col, false));
             } else {
-                if(chessboard[i][col][1] == playerCode) {
-                    break;
-                } else {
-                    arrValidCells.push(new PossibleMove(i, col, true));
-                    break;
+                if(chessboard[r][col][1] !== playerCode) {
+                    arrValidCells.push(new PossibleMove(r, col, true));
                 }
+                break;
             }
-            i--;
+            r--;
         }
+
         // Right
-        i = col+1;
-        while(i <= MAX_COL) {
-            if(chessboard[row][i] === EMPTY_TILE) {
-                arrValidCells.push(new PossibleMove(row, i, false));
+        c = col+1;
+        while(c <= MAX_COL) {
+            if(chessboard[row][c] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(row, c, false));
             } else {
-                if(chessboard[row][i][1] == playerCode) {
-                    break;
-                } else {
-                    arrValidCells.push(new PossibleMove(row, i, true));
-                    break;
+                if(chessboard[row][c][1] !== playerCode) {
+                    arrValidCells.push(new PossibleMove(row, c, true));
                 }
+                break;
             }
-            i++;
+            c++;
         }
+
         // Left
-        i = col-1;
-        while(i >= 0) {
-            if(chessboard[row][i] === EMPTY_TILE) {
-                arrValidCells.push(new PossibleMove(row, i, false));
+        c = col-1;
+        while(c >= 0) {
+            if(chessboard[row][c] === EMPTY_TILE) {
+                arrValidCells.push(new PossibleMove(row, c, false));
             } else {
-                if(chessboard[row][i][1] == playerCode) {
-                    break;
-                } else {
-                    arrValidCells.push(new PossibleMove(row, i, true));
-                    break;
+                if(chessboard[row][c][1] !== playerCode) {
+                    arrValidCells.push(new PossibleMove(row, c, true));
                 }
+                break;
             }
-            i--;
+            c--;
         }
     }
     else if(pieceType === PieceTypeEnum.Horse) {
