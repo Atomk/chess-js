@@ -9,12 +9,17 @@ const PieceTypeEnum = {
     "King": "k",
     "Queen": "q"
 };
+const PlayerEnum = {
+    "One": "1",
+    "Two": "2",
+};
 const GameStateEnum = {
     "SelectPiece": 0,
     "SelectDestination": 1
 };
 // Make enums immutable
 Object.freeze(PieceTypeEnum);
+Object.freeze(PlayerEnum);
 Object.freeze(GameStateEnum);
 
 const GRID_SIZE = 8;
@@ -34,6 +39,7 @@ let selectedPiece = {
 };
 
 let arrPossibleMoves;
+let activePlayer;
 let chessboard;
 
 document.body.onload = function() {
@@ -56,6 +62,7 @@ function initGame() {
         ["t1", "h1", "b1", "q1", "k1", "b1", "h1", "t1"]
     ];
 
+    activePlayer = PlayerEnum.One;
     gameState = GameStateEnum.SelectPiece;
     resetSelectedPiece();
 }
@@ -112,10 +119,10 @@ function handleCellClick(e) {
     if(gameState === GameStateEnum.SelectPiece) {
         if(cellContents !== EMPTY_TILE) {
             let pieceType = cellContents[0];
-            let playerCode = Number(cellContents[1]);
+            let playerCode = cellContents[1];
             console.log(`Cell ${row}-${col}. Piece type: ${pieceType}`);
     
-            if(playerCode === 1) {
+            if(playerCode === PlayerEnum.One) {
                 arrPossibleMoves = getPossibleMovesForPiece(row, col);
                 if(arrPossibleMoves.length === 0) {
                     console.log("This piece cannot move anywhere...");
@@ -171,9 +178,9 @@ function handleCellClick(e) {
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
                 let pieceType = cellContents[0];
-                let playerCode = Number(cellContents[1]);
+                let playerCode = cellContents[1];
                 // This is the same code as above, DRY
-                if(playerCode === 1) {
+                if(playerCode === PlayerEnum.One) {
                     arrPossibleMoves = getPossibleMovesForPiece(row, col);
                     if(arrPossibleMoves.length === 0) {
                         console.log("This piece cannot move anywhere...");
@@ -235,7 +242,7 @@ function getPossibleMovesForPiece(row, col) {
 
     if(pieceType === PieceTypeEnum.Pawn) {
         // Player one is the player "below", so the pawns can only go above
-        if(playerCode == "1") {
+        if(playerCode === PlayerEnum.One) {
             // If pawn can go above one step
             if(row > 0) {
                 let cellContents;
