@@ -122,17 +122,15 @@ function handleCellClick(e) {
             let pieceOwner = cellContents[1];
             console.log(`Cell ${row}-${col}. Piece type: ${pieceType}`);
     
-            if(pieceOwner === PlayerEnum.One) {
+            if(pieceOwner === activePlayer) {
                 arrPossibleMoves = getPossibleMovesForPiece(row, col);
                 if(arrPossibleMoves.length === 0) {
                     console.log("This piece cannot move anywhere...");
                 }
 
                 setDisplayDestinationActive(true);
-
                 selectedPiece.row = row;
                 selectedPiece.col = col;
-
                 gameState = GameStateEnum.SelectDestination;
             }
         }
@@ -141,7 +139,7 @@ function handleCellClick(e) {
         }
     } else if(gameState === GameStateEnum.SelectDestination) {
         // If user clicks again on the piece they're trying to move, do nothing
-        if(Number(row) === selectedPiece.row && Number(col) === selectedPiece.col) {
+        if(row === selectedPiece.row && col === selectedPiece.col) {
             console.log("You have already selected this piece.")
             return;
         }
@@ -153,47 +151,42 @@ function handleCellClick(e) {
         for(let i=0; i<arrPossibleMoves.length; i++) {
             if(arrPossibleMoves[i].row === row && arrPossibleMoves[i].col === col) {
                 isValidMove = true;
-                // If the destination is an empty cell, move the piece there
-                //if(chessboard[row][col] === EMPTY_TILE) {
-                    chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
-                    chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
-
-                    document.getElementById(`cell-${row}-${col}`).innerText = chessboard[row][col][0];
-                    document.getElementById(`cell-${selectedPiece.row}-${selectedPiece.col}`).innerText = EMPTY_TILE;
-                //}
-                // If the destination contains an enemy...
-                //else {
-                //    chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
-                //    chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
-                //}
-
-                gameState = GameStateEnum.SelectPiece;
                 break;
             }
         }
 
-        if(!isValidMove) {
-            resetSelectedPiece();
+        let selectedFriendUnit = false;
+        if(isValidMove) {
+            chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
+            chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
 
+            document.getElementById(`cell-${row}-${col}`).innerText = chessboard[row][col][0];
+            document.getElementById(`cell-${selectedPiece.row}-${selectedPiece.col}`).innerText = EMPTY_TILE;
+        } else {
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
                 let pieceType = cellContents[0];
                 let pieceOwner = cellContents[1];
-                // This is the same code as above, DRY
-                if(pieceOwner === PlayerEnum.One) {
+                // TODO This is the same code as above, DRY
+                if(pieceOwner === activePlayer) {
                     arrPossibleMoves = getPossibleMovesForPiece(row, col);
                     if(arrPossibleMoves.length === 0) {
                         console.log("This piece cannot move anywhere...");
                     }
 
-                    setDisplayDestinationActive(true);
-
-                    selectedPiece.row = row;
-                    selectedPiece.col = col;
-
-                    gameState = GameStateEnum.SelectDestination;
+                    selectedFriendUnit = true;
                 }
             }
+        }
+
+        if(selectedFriendUnit) {
+            setDisplayDestinationActive(true);
+            selectedPiece.row = row;
+            selectedPiece.col = col;
+            gameState = GameStateEnum.SelectDestination;
+        } else {
+            resetSelectedPiece();
+            gameState = GameStateEnum.SelectPiece;
         }
     }
 }
