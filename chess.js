@@ -235,7 +235,7 @@ function getPossibleMovesForPiece(row, col) {
                     }
                 }
                 // If cell up-right has enemy
-                if(col < GRID_SIZE-1) {
+                if(col < MAX_COL) {
                     cellContents = chessboard[row-1][col+1];
                     if(cellContents !== "" && cellContents[1] == "2") {
                         arrValidCells.push(new PossibleMove(row-1, col+1, true));
@@ -248,7 +248,7 @@ function getPossibleMovesForPiece(row, col) {
                     arrValidCells.push(new PossibleMove(row-1, col, false));
 
                     // If the pawn is at its starting position and has two free cells above
-                    if(row == GRID_SIZE-2) {
+                    if(row == MAX_ROW-1) {
                         cellContents = chessboard[row-2][col];
                         if(cellContents === "")
                             arrValidCells.push(new PossibleMove(row-2, col, false));
