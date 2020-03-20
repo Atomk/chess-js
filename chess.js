@@ -145,6 +145,10 @@ function handleCellClick(e) {
         }
 
         if(!isValidMove) {
+            // Reset selection
+            selectedPiece.row = -1;
+            selectedPiece.col = -1;
+
             // If you clicked on a friend unit
             if(cellContents !== "") {
                 let pieceType = cellContents[0];
@@ -163,10 +167,6 @@ function handleCellClick(e) {
 
                     gameState = GameStateEnum.SelectDestination;
                 }
-            } else {
-                // Reset selection
-                selectedPiece.row = -1;
-                selectedPiece.col = -1;
             }
         }
     }
