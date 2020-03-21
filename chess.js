@@ -90,7 +90,7 @@ function createChessboardTableHTML(gridSize) {
             let td = document.createElement("td");
             // This makes it easier to recognize which cell was clicked
             td.id = `cell-${row}-${col}`;
-            td.onclick = handleCellClick;
+            td.onclick = handleHTMLCellClick;
 
             if(chessboard[row][col] !== EMPTY_TILE) {
                 
@@ -122,8 +122,8 @@ function createChessboardTableHTML(gridSize) {
     return table;
 }
 
-function handleCellClick(e) {
     // Retrieves row and column index from the clicked cell's id
+function handleHTMLCellClick(e) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
     let idArray = e.currentTarget.id.split("-");
     let row = Number(idArray[1]);
