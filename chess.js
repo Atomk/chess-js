@@ -323,6 +323,39 @@ function getPossibleMovesForPiece(row, col) {
                     }
                 }
             }
+        } else {
+            // If pawn can go below one step
+            if(row <= MAX_ROW) {
+                let cellContents;
+
+                // If cell down-left has enemy
+                if(col > 0) {
+                    cellContents = chessboard[row+1][col-1];
+                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceOwner) {
+                        arrValidCells.push(new PossibleMove(row+1, col-1, true));
+                    }
+                }
+                // If cell down-right has enemy
+                if(col < MAX_COL) {
+                    cellContents = chessboard[row+1][col+1];
+                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceOwner) {
+                        arrValidCells.push(new PossibleMove(row+1, col+1, true));
+                    }
+                }
+                
+                // If cell below is free
+                cellContents = chessboard[row+1][col];
+                if(cellContents === EMPTY_TILE) {
+                    arrValidCells.push(new PossibleMove(row+1, col, false));
+
+                    // If the pawn is at its starting position and has two free cells below
+                    if(row === 1) {
+                        cellContents = chessboard[row+2][col];
+                        if(cellContents === EMPTY_TILE)
+                            arrValidCells.push(new PossibleMove(row+2, col, false));
+                    }
+                }
+            }
         }
     }
     else if(pieceType === PieceTypeEnum.Tower) {
