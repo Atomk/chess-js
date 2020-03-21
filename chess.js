@@ -15,7 +15,8 @@ const PlayerEnum = {
 };
 const GameStateEnum = {
     "SelectPiece": 0,
-    "SelectDestination": 1
+    "SelectDestination": 1,
+    "GameOver": 2
 };
 // Make enums immutable
 Object.freeze(PieceTypeEnum);
@@ -133,6 +134,9 @@ function handleHTMLCellClick(e) {
 }
 
 function handleCellSelected(row, col) {
+    if(gameState === GameStateEnum.GameOver)
+        return;
+
     let cellContents = chessboard[row][col];
 
     if(gameState === GameStateEnum.SelectPiece) {
@@ -178,6 +182,11 @@ function handleCellSelected(row, col) {
 
         let selectedFriendUnit = false;
         if(isValidMove) {
+            let kingDefeated = false;
+            if(chessboard[row][col][0] === PieceTypeEnum.King) {
+                kingDefeated = true;
+            }
+
             chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
             chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
 
@@ -185,7 +194,18 @@ function handleCellSelected(row, col) {
             document.getElementById(`cell-${row}-${col}`).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
 
-            changeTurn();
+            if(kingDefeated) {
+                if(activePlayer === PlayerEnum.One) {
+                    messageElem.innerText = "🏆 White wins! 🏆";
+                } else {
+                    messageElem.innerText = "🏆 Black wins! 🏆";
+                }
+
+                // TODO make all pieces unselectable (remove .selectable class)
+                gameState = GameStateEnum.GameOver;
+             } else {
+                changeTurn();
+             }
         } else {
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
@@ -204,15 +224,18 @@ function handleCellSelected(row, col) {
             }
         }
 
-        if(selectedFriendUnit) {
-            setSelectionMarkerActive(row, col, true);
-            setDisplayDestinationActive(true);
-            selectedPiece.row = row;
-            selectedPiece.col = col;
-            gameState = GameStateEnum.SelectDestination;
-        } else {
-            resetSelectedPiece();
-            gameState = GameStateEnum.SelectPiece;
+        if (gameState !== GameStateEnum.GameOver) {
+            // TODO should call this function again, not repeat code
+            if (selectedFriendUnit) {
+                setSelectionMarkerActive(row, col, true);
+                setDisplayDestinationActive(true);
+                selectedPiece.row = row;
+                selectedPiece.col = col;
+                gameState = GameStateEnum.SelectDestination;
+            } else {
+                resetSelectedPiece();
+                gameState = GameStateEnum.SelectPiece;
+            }
         }
     }
 }
