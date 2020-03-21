@@ -7,7 +7,7 @@ h1 {
     text-align: center;
 }
 
-#message {
+.message {
     font-family: monospace;
     text-align: center;
 }

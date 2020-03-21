@@ -33,7 +33,8 @@ const MAX_ROW = GRID_SIZE - 1;
 
 const EMPTY_TILE = "";
 
-let messageElem;
+let messageTurnElem;
+let messageWarningElem;
 
 let gameState;
 let activePlayer;
@@ -51,7 +52,8 @@ document.body.onload = function() {
     let table = createChessboardTableHTML(GRID_SIZE);
     document.getElementById("grid-container").appendChild(table);
 
-    messageElem = document.getElementById("message");
+    messageTurnElem = document.getElementById("msg-turn");
+    messageWarningElem = document.getElementById("msg-warning");
     setPlayerTurnText();
 }
 
@@ -196,14 +198,26 @@ function handleCellSelected(row, col) {
 
             if(kingDefeated) {
                 if(activePlayer === PlayerEnum.One) {
-                    messageElem.innerText = "🏆 White wins! 🏆";
+                    messageTurnElem.innerText = "🏆 White wins! 🏆";
                 } else {
-                    messageElem.innerText = "🏆 Black wins! 🏆";
+                    messageTurnElem.innerText = "🏆 Black wins! 🏆";
                 }
 
                 // TODO make all pieces unselectable (remove .selectable class)
                 gameState = GameStateEnum.GameOver;
              } else {
+                let kingInDangerCoords = isKingInDanger();
+                if(kingInDangerCoords) {
+                    if(chessboard[kingInDangerCoords.row][kingInDangerCoords.col][1] === PlayerEnum.One) {
+                        messageWarningElem.innerText = "⚠ White king check! ⚠";
+                    } else {
+                        messageWarningElem.innerText = "⚠ Black king check! ⚠";
+                    }
+                } else {
+                    // TODO: also hide on victory?
+                    messageWarningElem.innerText = "";
+                }
+
                 changeTurn();
              }
         } else {
@@ -264,9 +278,9 @@ function changeTurn() {
 
 function setPlayerTurnText() {
     if(activePlayer === PlayerEnum.One)
-        messageElem.innerText = "⚪ White's turn ⚪";
+        messageTurnElem.innerText = "⚪ White's turn ⚪";
     else
-        messageElem.innerText = "⚫ Black's turn ⚫";
+        messageTurnElem.innerText = "⚫ Black's turn ⚫";
 }
 
 /** Allows to show/hide where a piece can be moved. */
@@ -682,4 +696,39 @@ function getPossibleMovesForPiece(row, col, pieceType) {
  * are in-bounds in the chessboard matrix. */
 function checkRowColValid(row, col) {
     return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
+}
+
+// Called it like this because "checkCheck" is not a good idea
+function isKingInDanger() {
+    // When a player moves a piece, they can also put
+    // their own king in danger, so both
+    // player's pieces must be checked.
+    let pieceType;
+    let arrPossibleMoves;
+    let enemyRow, enemyCol;
+
+    for (let r = 0; r <= MAX_ROW; r++) {
+        for (let c = 0; c <= MAX_COL; c++) {
+            // For every piece on the chessboard...
+            if(chessboard[r][c] != EMPTY_TILE) {
+                pieceType = chessboard[r][c][0];
+                arrPossibleMoves = getPossibleMovesForPiece(r, c, pieceType);
+                // ...check all the cells that piece can be moved to
+                for(let i=0; i<arrPossibleMoves.length; i++) {
+                    // If the piece can kill an enemy...
+                    if(arrPossibleMoves[i].isEnemy) {
+                        enemyRow = arrPossibleMoves[i].row;
+                        enemyCol = arrPossibleMoves[i].col;
+                        // ...and the enemy is a king...
+                        if(chessboard[enemyRow][enemyCol][0] === PieceTypeEnum.King) {
+                            // ...return its position in the chessboard
+                            return { row: enemyRow, col: enemyCol };
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return null;
 }
