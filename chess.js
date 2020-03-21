@@ -129,6 +129,10 @@ function handleHTMLCellClick(e) {
     let row = Number(idArray[1]);
     let col = Number(idArray[2]);
 
+    handleCellSelected(row, col);
+}
+
+function handleCellSelected(row, col) {
     let cellContents = chessboard[row][col];
 
     if(gameState === GameStateEnum.SelectPiece) {
