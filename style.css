@@ -25,7 +25,9 @@ td {
     vertical-align: middle;
 }
 
-/* https://stackoverflow.com/a/4407335 */
+/* Disables text selection, used to avoid highlighting
+the pieces by mistake, since they're basically text
+https://stackoverflow.com/a/4407335 */
 .noselect {
     cursor: default;
     -webkit-touch-callout: none;    /* iOS Safari */
@@ -51,6 +53,7 @@ td {
     text-shadow: 0 0 3px #fff;
 }
 
+/* Chessboard colors */
 .cell-black {
     background-color: #888;
 }
@@ -58,6 +61,7 @@ td {
     background-color: #dadada;
 }
 
+/* Creates a blue border around the piece that was selected  */
 .cell-selected {
     position: relative;
 }
@@ -75,10 +79,12 @@ td {
     left: 0;
 }
 
+/* These allow to highlight the cells
+where the selected piece can be moved */
 .cell-move-free,
 .cell-move-enemy {
     cursor: pointer;
-    /* Allows ::after to be absolute position */
+    /* Allows ::after to have absolute position */
     position: relative;
 }
 .cell-move-free::after,
