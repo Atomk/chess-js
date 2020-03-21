@@ -138,7 +138,7 @@ function handleCellClick(e) {
             console.log(`Cell ${row}-${col}. Piece type: ${pieceType}`);
     
             if(pieceOwner === activePlayer) {
-                arrPossibleMoves = getPossibleMovesForPiece(row, col);
+                arrPossibleMoves = getPossibleMovesForPiece(row, col, pieceType);
                 if(arrPossibleMoves.length === 0) {
                     console.log("This piece cannot move anywhere...");
                 }
@@ -188,7 +188,9 @@ function handleCellClick(e) {
                 let pieceOwner = cellContents[1];
                 // TODO This is the same code as above, DRY
                 if(pieceOwner === activePlayer) {
-                    arrPossibleMoves = getPossibleMovesForPiece(row, col);
+                    let pieceType = cellContents[0];
+
+                    arrPossibleMoves = getPossibleMovesForPiece(row, col, pieceType);
                     if(arrPossibleMoves.length === 0) {
                         console.log("This piece cannot move anywhere...");
                     }
@@ -269,7 +271,10 @@ class PossibleMove {
     }
 }
 
-function getPossibleMovesForPiece(row, col) {
+// The third parameter is there only to avoid copypasting code
+// for the queen's movements, otherwise you could get the
+// same information directly from the chessboard
+function getPossibleMovesForPiece(row, col, pieceType) {
     if(!checkRowColValid(row, col))
     {
         console.error("Invalid row or column value");
@@ -282,8 +287,9 @@ function getPossibleMovesForPiece(row, col) {
         return null;
     }
 
-    let pieceType = cellContents[0];
     // TODO this is a string, I foresee errors. Should be an enum or something else
+    // Se notes above this function
+    //let pieceType = cellContents[0];
     let pieceOwner = cellContents[1];
     
     let arrValidCells = [];
@@ -632,6 +638,11 @@ function getPossibleMovesForPiece(row, col) {
                 arrValidCells.push(new PossibleMove(r, c, true));
             }
         }
+    }
+    else if(pieceType === PieceTypeEnum.Queen) {
+        let towerMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Tower);
+        let bishopMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Bishop);
+        arrValidCells = towerMovements.concat(bishopMovements);
     }
     else {
         console.error("Unrecognized piece type: " + pieceType);
