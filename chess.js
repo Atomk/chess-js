@@ -298,14 +298,14 @@ function getPossibleMovesForPiece(row, col) {
                 // If cell up-left has enemy
                 if(col > 0) {
                     cellContents = chessboard[row-1][col-1];
-                    if(cellContents !== EMPTY_TILE && cellContents[1] === PlayerEnum.Two) {
+                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceOwner) {
                         arrValidCells.push(new PossibleMove(row-1, col-1, true));
                     }
                 }
                 // If cell up-right has enemy
                 if(col < MAX_COL) {
                     cellContents = chessboard[row-1][col+1];
-                    if(cellContents !== EMPTY_TILE && cellContents[1] === PlayerEnum.Two) {
+                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceOwner) {
                         arrValidCells.push(new PossibleMove(row-1, col+1, true));
                     }
                 }
