@@ -32,6 +32,8 @@ const MAX_ROW = GRID_SIZE - 1;
 
 const EMPTY_TILE = "";
 
+let messageElem;
+
 let gameState;
 let activePlayer;
 let chessboard;
@@ -47,6 +49,9 @@ document.body.onload = function() {
 
     let table = createChessboardTableHTML(GRID_SIZE);
     document.getElementById("grid-container").appendChild(table);
+
+    messageElem = document.getElementById("message");
+    setPlayerTurnText();
 }
 
 function initGame() {
@@ -175,6 +180,8 @@ function handleCellClick(e) {
             let selectedPieceHTMLCell = document.getElementById(`cell-${selectedPiece.row}-${selectedPiece.col}`);
             document.getElementById(`cell-${row}-${col}`).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
+
+            changeTurn();
         } else {
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
@@ -215,6 +222,22 @@ function setSelectionMarkerActive(row, col, display) {
         cellElement.classList.add("cell-selected");
     else
         cellElement.classList.remove("cell-selected");
+}
+
+function changeTurn() {
+    if(activePlayer === PlayerEnum.One)
+        activePlayer = PlayerEnum.Two;
+    else
+        activePlayer = PlayerEnum.One;
+
+    setPlayerTurnText();
+}
+
+function setPlayerTurnText() {
+    if(activePlayer === PlayerEnum.One)
+        messageElem.innerText = "White's turn.";
+    else
+        messageElem.innerText = "Black's turn.";
 }
 
 /** Allows to show/hide where a piece can be moved. */
