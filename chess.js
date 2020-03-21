@@ -219,17 +219,23 @@ function setSelectionMarkerActive(row, col, display) {
 
 /** Allows to show/hide where a piece can be moved. */
 function setDisplayDestinationActive(display) {
-    console.log((display ? "Enabling" : "Disabling") + " destination mode.");
+    if (arrPossibleMoves.length > 0) {
+        console.log((display ? "Showing" : "Hiding") + " possible moves.");
 
-    arrPossibleMoves.forEach((v) => {
-        let cell = document.getElementById(`cell-${v.row}-${v.col}`);
-        let className = v.isEnemy ? "cell-move-enemy" : "cell-move-free";
-        
-        if(display)
-            cell.classList.add(className);
-        else
-            cell.classList.remove(className);
-    });
+        arrPossibleMoves.forEach((v) => {
+            let cell = document.getElementById(`cell-${v.row}-${v.col}`);
+            let className = v.isEnemy ? "cell-move-enemy" : "cell-move-free";
+
+            if (display)
+                cell.classList.add(className);
+            else
+                cell.classList.remove(className);
+        });
+    } else {
+        if(display) {
+            console.log("Nothing to display.");
+        }
+    }
 }
 
 class PossibleMove {
