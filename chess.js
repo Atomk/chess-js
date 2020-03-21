@@ -237,9 +237,9 @@ function changeTurn() {
 
 function setPlayerTurnText() {
     if(activePlayer === PlayerEnum.One)
-        messageElem.innerText = "White's turn.";
+        messageElem.innerText = "⚪ White's turn ⚪";
     else
-        messageElem.innerText = "Black's turn.";
+        messageElem.innerText = "⚫ Black's turn ⚫";
 }
 
 /** Allows to show/hide where a piece can be moved. */
