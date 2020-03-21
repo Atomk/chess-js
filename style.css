@@ -32,6 +32,20 @@ td {
                                     supported by Chrome, Opera and Firefox */
 }
 
+.piece-white,
+.piece-black {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+.piece-white {
+    color: #eee;
+    text-shadow: 0 0 3px #000;
+}
+.piece-black {
+    color: #222;
+    text-shadow: 0 0 3px #fff;
+}
+
 .cell-black {
     background-color: #555;
 }

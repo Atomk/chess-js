@@ -88,7 +88,17 @@ function createChessboardTableHTML(gridSize) {
             td.onclick = handleCellClick;
 
             if(chessboard[row][col] !== EMPTY_TILE) {
-                td.innerText = chessboard[row][col][0];
+                
+                let span = document.createElement("span");
+                span.innerText = chessboard[row][col][0];
+
+                if(chessboard[row][col][1] === PlayerEnum.One) {
+                    span.className = "piece-white";
+                } else {
+                    span.className = "piece-black";
+                }
+
+                td.appendChild(span);
             }
 
             // Makes cells with an even column index black or white
@@ -109,7 +119,8 @@ function createChessboardTableHTML(gridSize) {
 
 function handleCellClick(e) {
     // Retrieves row and column index from the clicked cell's id
-    let idArray = e.target.id.split("-");
+    // https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
+    let idArray = e.currentTarget.id.split("-");
     let row = Number(idArray[1]);
     let col = Number(idArray[2]);
 
@@ -161,8 +172,9 @@ function handleCellClick(e) {
             chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
             chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
 
-            document.getElementById(`cell-${row}-${col}`).innerText = chessboard[row][col][0];
-            document.getElementById(`cell-${selectedPiece.row}-${selectedPiece.col}`).innerText = EMPTY_TILE;
+            let selectedPieceHTMLCell = document.getElementById(`cell-${selectedPiece.row}-${selectedPiece.col}`);
+            document.getElementById(`cell-${row}-${col}`).innerHTML = selectedPieceHTMLCell.innerHTML;
+            selectedPieceHTMLCell.innerHTML = "";
         } else {
             // If you clicked on a friend unit
             if(cellContents !== EMPTY_TILE) {
