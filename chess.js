@@ -127,6 +127,7 @@ function handleCellClick(e) {
                     console.log("This piece cannot move anywhere...");
                 }
 
+                setSelectionMarkerActive(row, col, true);
                 setDisplayDestinationActive(true);
                 selectedPiece.row = row;
                 selectedPiece.col = col;
@@ -143,6 +144,7 @@ function handleCellClick(e) {
             return;
         }
 
+        setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
         setDisplayDestinationActive(false);
 
         let isValidMove = false;
@@ -178,6 +180,7 @@ function handleCellClick(e) {
         }
 
         if(selectedFriendUnit) {
+            setSelectionMarkerActive(row, col, true);
             setDisplayDestinationActive(true);
             selectedPiece.row = row;
             selectedPiece.col = col;
@@ -187,6 +190,19 @@ function handleCellClick(e) {
             gameState = GameStateEnum.SelectPiece;
         }
     }
+}
+
+function setSelectionMarkerActive(row, col, display) {
+    if(!checkRowColValid) {
+        console.error("setSelectionMarkerActive: Invalid arguments.");
+        return;
+    }
+
+    let cellElement = document.getElementById(`cell-${row}-${col}`);
+    if(display)
+        cellElement.classList.add("cell-selected");
+    else
+        cellElement.classList.remove("cell-selected");
 }
 
 /** Allows to show/hide where a piece can be moved. */

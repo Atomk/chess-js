@@ -39,6 +39,23 @@ td {
     background-color: #dadada;
 }
 
+.cell-selected {
+    position: relative;
+}
+.cell-selected::after {
+    content: " ";
+    box-sizing: border-box;
+    border: 4px solid #48f;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    /* Remove element from page flow */
+    position: absolute;
+    /* Centers square on cell */
+    top: 0;
+    left: 0;
+}
+
 .cell-move-free,
 .cell-move-enemy {
     cursor: pointer;
