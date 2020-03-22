@@ -336,7 +336,7 @@ function getPossibleMovesForPiece(row, col, pieceType) {
     let arrValidCells = [];
 
     if(pieceType === PieceTypeEnum.Pawn) {
-        // Player one is the player "below", so the pawns can only go above
+        // Player one is the player "below" (white), so white pawns can only go up
         if(pieceOwner === PlayerEnum.One) {
             // If pawn can go above one step
             if(row > 0) {
@@ -708,9 +708,9 @@ function getHTMLCellByCoords(row, col) {
 
 // Called it like this because "checkCheck" is not a good idea
 function isKingInDanger() {
-    // When a player moves a piece, they can also put
-    // their own king in danger, so both
-    // player's pieces must be checked.
+    // When a player moves a piece,
+    // they can also put their own king in danger,
+    // so both player's pieces must be checked.
     let pieceType;
     let arrPossibleMoves;
     let enemyRow, enemyCol;
@@ -723,7 +723,7 @@ function isKingInDanger() {
                 arrPossibleMoves = getPossibleMovesForPiece(r, c, pieceType);
                 // ...check all the cells that piece can be moved to
                 for(let i=0; i<arrPossibleMoves.length; i++) {
-                    // If the piece can kill an enemy...
+                    // If the piece can capture an enemy...
                     if(arrPossibleMoves[i].isEnemy) {
                         enemyRow = arrPossibleMoves[i].row;
                         enemyCol = arrPossibleMoves[i].col;
