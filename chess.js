@@ -10,8 +10,8 @@ const PieceTypeEnum = {
     "Queen": "q"
 };
 const PlayerEnum = {
-    "One": "1",
-    "Two": "2",
+    "White": "1",
+    "Black": "2",
 };
 const GameStateEnum = {
     "SelectPiece": 0,
@@ -85,7 +85,7 @@ function initGame() {
         ["t1", "h1", "b1", "q1", "k1", "b1", "h1", "t1"]
     ];
 
-    activePlayer = PlayerEnum.One;
+    activePlayer = PlayerEnum.White;
     gameState = GameStateEnum.SelectPiece;
     resetSelectedPiece();
 }
@@ -115,12 +115,12 @@ function createChessboardTableHTML(gridSize) {
                 
                 let span = document.createElement("span");
                 let pieceType = chessboard[row][col][0];
-                if(chessboard[row][col][1] === PlayerEnum.One)
+                if(chessboard[row][col][1] === PlayerEnum.White)
                     span.innerText = htmlPiecesUnicodeWhite[pieceType];
                 else
                 span.innerText = htmlPiecesUnicodeBlack[pieceType];
 
-                if(chessboard[row][col][1] === PlayerEnum.One) {
+                if(chessboard[row][col][1] === PlayerEnum.White) {
                     span.className = "piece-white";
                 } else {
                     span.className = "piece-black";
@@ -217,7 +217,7 @@ function handleCellSelected(row, col) {
             selectedPieceHTMLCell.innerHTML = "";
 
             if(kingDefeated) {
-                if(activePlayer === PlayerEnum.One) {
+                if(activePlayer === PlayerEnum.White) {
                     messageTurnElem.innerText = "🏆 White wins! 🏆";
                 } else {
                     messageTurnElem.innerText = "🏆 Black wins! 🏆";
@@ -228,7 +228,7 @@ function handleCellSelected(row, col) {
              } else {
                 let kingInDangerCoords = isKingInDanger();
                 if(kingInDangerCoords) {
-                    if(chessboard[kingInDangerCoords.row][kingInDangerCoords.col][1] === PlayerEnum.One) {
+                    if(chessboard[kingInDangerCoords.row][kingInDangerCoords.col][1] === PlayerEnum.White) {
                         messageWarningElem.innerText = "⚠ White king check! ⚠";
                     } else {
                         messageWarningElem.innerText = "⚠ Black king check! ⚠";
@@ -288,16 +288,16 @@ function setSelectionMarkerActive(row, col, display) {
 }
 
 function changeTurn() {
-    if(activePlayer === PlayerEnum.One)
-        activePlayer = PlayerEnum.Two;
+    if(activePlayer === PlayerEnum.White)
+        activePlayer = PlayerEnum.Black;
     else
-        activePlayer = PlayerEnum.One;
+        activePlayer = PlayerEnum.White;
 
     setPlayerTurnText();
 }
 
 function setPlayerTurnText() {
-    if(activePlayer === PlayerEnum.One)
+    if(activePlayer === PlayerEnum.White)
         messageTurnElem.innerText = "⚪ White's turn ⚪";
     else
         messageTurnElem.innerText = "⚫ Black's turn ⚫";
@@ -357,7 +357,7 @@ function getPossibleMovesForPiece(row, col, pieceType) {
 
     if(pieceType === PieceTypeEnum.Pawn) {
         // Player one is the player "below" (white), so white pawns can only go up
-        if(pieceOwner === PlayerEnum.One) {
+        if(pieceOwner === PlayerEnum.White) {
             // If pawn can go above one step
             if(row > 0) {
                 let cellContents;
