@@ -92,7 +92,7 @@ function createChessboardTableHTML(gridSize) {
         for(let col = 0; col < gridSize; col++) {
             let td = document.createElement("td");
             // This makes it easier to recognize which cell was clicked
-            td.id = `cell-${row}-${col}`;
+            td.id = coordsToId(row, col);
             td.onclick = handleHTMLCellClick;
 
             if(chessboard[row][col] !== EMPTY_TILE) {
@@ -192,8 +192,8 @@ function handleCellSelected(row, col) {
             chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
             chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
 
-            let selectedPieceHTMLCell = document.getElementById(`cell-${selectedPiece.row}-${selectedPiece.col}`);
-            document.getElementById(`cell-${row}-${col}`).innerHTML = selectedPieceHTMLCell.innerHTML;
+            let selectedPieceHTMLCell = getHTMLCellByCoords(selectedPiece.row, selectedPiece.col)
+            getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
 
             if(kingDefeated) {
@@ -260,7 +260,7 @@ function setSelectionMarkerActive(row, col, display) {
         return;
     }
 
-    let cellElement = document.getElementById(`cell-${row}-${col}`);
+    let cellElement = getHTMLCellByCoords(row, col);
     if(display)
         cellElement.classList.add("cell-selected");
     else
@@ -289,7 +289,7 @@ function setDisplayDestinationActive(display) {
         console.log((display ? "Showing" : "Hiding") + " possible moves.");
 
         arrPossibleMoves.forEach((v) => {
-            let cell = document.getElementById(`cell-${v.row}-${v.col}`);
+            let cell = getHTMLCellByCoords(v.row, v.col);
             let className = v.isEnemy ? "cell-move-enemy" : "cell-move-free";
 
             if (display)
@@ -696,6 +696,14 @@ function getPossibleMovesForPiece(row, col, pieceType) {
  * are in-bounds in the chessboard matrix. */
 function checkRowColValid(row, col) {
     return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
+}
+
+function coordsToId(row, col) {
+    return `cell-${row}-${col}`;
+}
+
+function getHTMLCellByCoords(row, col) {
+    return document.getElementById(coordsToId(row, col));
 }
 
 // Called it like this because "checkCheck" is not a good idea
