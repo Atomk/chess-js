@@ -46,8 +46,7 @@ https://stackoverflow.com/a/4407335 */
 
 .piece-white,
 .piece-black {
-    font-size: 1.3em;
-    font-weight: bold;
+    font-size: 1.8em;
 }
 .piece-white {
     color: #eee;

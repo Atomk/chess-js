@@ -23,6 +23,22 @@ Object.freeze(PieceTypeEnum);
 Object.freeze(PlayerEnum);
 Object.freeze(GameStateEnum);
 
+const htmlPiecesUnicodeWhite = {};
+htmlPiecesUnicodeWhite[PieceTypeEnum.Pawn] = "♙";
+htmlPiecesUnicodeWhite[PieceTypeEnum.Horse] = "♘";
+htmlPiecesUnicodeWhite[PieceTypeEnum.Bishop] = "♗‍";
+htmlPiecesUnicodeWhite[PieceTypeEnum.Tower] = "♖";
+htmlPiecesUnicodeWhite[PieceTypeEnum.King] = "♔";
+htmlPiecesUnicodeWhite[PieceTypeEnum.Queen] = "♕";
+
+const htmlPiecesUnicodeBlack = {};
+htmlPiecesUnicodeBlack[PieceTypeEnum.Pawn] = "♟";
+htmlPiecesUnicodeBlack[PieceTypeEnum.Horse] = "♞";
+htmlPiecesUnicodeBlack[PieceTypeEnum.Bishop] = "♝";
+htmlPiecesUnicodeBlack[PieceTypeEnum.Tower] = "♜";
+htmlPiecesUnicodeBlack[PieceTypeEnum.King] = "♚";
+htmlPiecesUnicodeBlack[PieceTypeEnum.Queen] = "♛";
+
 const GRID_SIZE = 8;
 // I made these because sometimes I forget to check array indexes
 // against "GRID_SIZE-1" instead of just "GRID_SIZE"
@@ -98,7 +114,11 @@ function createChessboardTableHTML(gridSize) {
             if(chessboard[row][col] !== EMPTY_TILE) {
                 
                 let span = document.createElement("span");
-                span.innerText = chessboard[row][col][0];
+                let pieceType = chessboard[row][col][0];
+                if(chessboard[row][col][1] === PlayerEnum.One)
+                    span.innerText = htmlPiecesUnicodeWhite[pieceType];
+                else
+                span.innerText = htmlPiecesUnicodeBlack[pieceType];
 
                 if(chessboard[row][col][1] === PlayerEnum.One) {
                     span.className = "piece-white";
