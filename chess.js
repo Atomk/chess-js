@@ -74,7 +74,7 @@ document.body.onload = function() {
 
 function initGame() {
     chessboard = [
-        ["r2", "h2", "b2", "k2", "q2", "b2", "h2", "r2"],
+        ["r2", "h2", "b2", "q2", "k2", "b2", "h2", "r2"],
         ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
         [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
         [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
