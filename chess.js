@@ -55,7 +55,6 @@ let messageWarningElem;
 let gameState;
 let activePlayer;
 let chessboard;
-let arrPossibleMoves;
 let selectedPiece = {
     row: -1,
     col: -1
@@ -168,13 +167,13 @@ function handleCellSelected(row, col) {
             console.log(`Cell ${row}-${col}. Piece type: ${pieceType}`);
     
             if(pieceOwner === activePlayer) {
-                arrPossibleMoves = getPossibleMovesForPiece(row, col, pieceType);
+                let arrPossibleMoves = getPossibleMovesForPiece(row, col, pieceType);
                 if(arrPossibleMoves.length === 0) {
                     console.log("This piece cannot move anywhere...");
                 }
 
                 setSelectionMarkerActive(row, col, true);
-                setDisplayDestinationActive(true);
+                setDisplayDestinationActive(arrPossibleMoves, true);
                 selectedPiece.row = row;
                 selectedPiece.col = col;
                 gameState = GameStateEnum.SelectDestination;
@@ -189,9 +188,12 @@ function handleCellSelected(row, col) {
             console.log("You have already selected this piece.")
             return;
         }
+        
+        let selectedPieceType = chessboard[selectedPiece.row][selectedPiece.col][0];
+        let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col, selectedPieceType);
 
         setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
-        setDisplayDestinationActive(false);
+        setDisplayDestinationActive(arrPossibleMoves, false);
 
         let isValidMove = false;
         // Check if the selected piece can be moved in the clicked cell
@@ -262,7 +264,7 @@ function handleCellSelected(row, col) {
             // TODO should call this function again, not repeat code
             if (selectedFriendUnit) {
                 setSelectionMarkerActive(row, col, true);
-                setDisplayDestinationActive(true);
+                setDisplayDestinationActive(arrPossibleMoves, true);
                 selectedPiece.row = row;
                 selectedPiece.col = col;
                 gameState = GameStateEnum.SelectDestination;
@@ -304,7 +306,7 @@ function setPlayerTurnText() {
 }
 
 /** Allows to show/hide where a piece can be moved. */
-function setDisplayDestinationActive(display) {
+function setDisplayDestinationActive(arrPossibleMoves, display) {
     if (arrPossibleMoves.length > 0) {
         console.log((display ? "Showing" : "Hiding") + " possible moves.");
 
