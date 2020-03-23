@@ -5,7 +5,7 @@ const PieceTypeEnum = {
     "Pawn": "p",
     "Horse": "h",
     "Bishop": "b",
-    "Tower": "t",
+    "Rook": "r",
     "King": "k",
     "Queen": "q"
 };
@@ -27,7 +27,7 @@ const htmlPiecesUnicodeWhite = {};
 htmlPiecesUnicodeWhite[PieceTypeEnum.Pawn] = "♙";
 htmlPiecesUnicodeWhite[PieceTypeEnum.Horse] = "♘";
 htmlPiecesUnicodeWhite[PieceTypeEnum.Bishop] = "♗‍";
-htmlPiecesUnicodeWhite[PieceTypeEnum.Tower] = "♖";
+htmlPiecesUnicodeWhite[PieceTypeEnum.Rook] = "♖";
 htmlPiecesUnicodeWhite[PieceTypeEnum.King] = "♔";
 htmlPiecesUnicodeWhite[PieceTypeEnum.Queen] = "♕";
 
@@ -35,7 +35,7 @@ const htmlPiecesUnicodeBlack = {};
 htmlPiecesUnicodeBlack[PieceTypeEnum.Pawn] = "♟";
 htmlPiecesUnicodeBlack[PieceTypeEnum.Horse] = "♞";
 htmlPiecesUnicodeBlack[PieceTypeEnum.Bishop] = "♝";
-htmlPiecesUnicodeBlack[PieceTypeEnum.Tower] = "♜";
+htmlPiecesUnicodeBlack[PieceTypeEnum.Rook] = "♜";
 htmlPiecesUnicodeBlack[PieceTypeEnum.King] = "♚";
 htmlPiecesUnicodeBlack[PieceTypeEnum.Queen] = "♛";
 
@@ -75,14 +75,14 @@ document.body.onload = function() {
 
 function initGame() {
     chessboard = [
-        ["t2", "h2", "b2", "k2", "q2", "b2", "h2", "t2"],
+        ["r2", "h2", "b2", "k2", "q2", "b2", "h2", "r2"],
         ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
         [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
         [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
         [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
         [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
         ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
-        ["t1", "h1", "b1", "q1", "k1", "b1", "h1", "t1"]
+        ["r1", "h1", "b1", "q1", "k1", "b1", "h1", "r1"]
     ];
 
     activePlayer = PlayerEnum.White;
@@ -425,7 +425,7 @@ function getPossibleMovesForPiece(row, col, pieceType) {
             }
         }
     }
-    else if(pieceType === PieceTypeEnum.Tower) {
+    else if(pieceType === PieceTypeEnum.Rook) {
         let r, c;
         
         // Bottom
@@ -439,7 +439,7 @@ function getPossibleMovesForPiece(row, col, pieceType) {
                 if(chessboard[r][col][1] !== pieceOwner) {
                     arrValidCells.push(new PossibleMove(r, col, true));
                 }
-                // In any case this cell is not empty, so the tower
+                // In any case this cell is not empty, so the rook
                 // cannot move beyond this point in this direction
                 break;
             }
@@ -701,9 +701,9 @@ function getPossibleMovesForPiece(row, col, pieceType) {
         }
     }
     else if(pieceType === PieceTypeEnum.Queen) {
-        let towerMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Tower);
+        let rookMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Rook);
         let bishopMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Bishop);
-        arrValidCells = towerMovements.concat(bishopMovements);
+        arrValidCells = rookMovements.concat(bishopMovements);
     }
     else {
         console.error("Unrecognized piece type: " + pieceType);
