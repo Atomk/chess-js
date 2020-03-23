@@ -11,6 +11,7 @@ h1 {
     margin-top: 12px;
     margin-bottom: 0;
     font-family: monospace;
+    font-size: 1.2em;
     text-align: center;
 }
 #msg-turn {
