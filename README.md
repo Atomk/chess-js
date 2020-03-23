@@ -1,7 +1,7 @@
-JSChess
+chess-js
 =======
 
-The chess game everyone knows and loves, in pure vanilla JavaScript.
+The chess game everyone knows and loves, in pure vanilla JavaScript. [Try it out!](https://atomk.github.io/chess-js/)
 
 At the moment there is no checkmate, to win you have to capture the king.
 
