@@ -167,7 +167,7 @@ function handleCellSelected(row, col) {
             console.log(`Cell ${row}-${col}. Piece type: ${pieceType}`);
     
             if(pieceOwner === activePlayer) {
-                let arrPossibleMoves = getPossibleMovesForPiece(row, col, pieceType);
+                let arrPossibleMoves = getPossibleMovesForPiece(row, col);
                 if(arrPossibleMoves.length === 0) {
                     console.log("This piece cannot move anywhere...");
                 }
@@ -189,8 +189,7 @@ function handleCellSelected(row, col) {
             return;
         }
         
-        let selectedPieceType = chessboard[selectedPiece.row][selectedPiece.col][0];
-        let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col, selectedPieceType);
+        let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col);
 
         setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
         setDisplayDestinationActive(arrPossibleMoves, false);
@@ -248,9 +247,7 @@ function handleCellSelected(row, col) {
                 let pieceOwner = cellContents[1];
                 // TODO This is the same code as above, DRY
                 if(pieceOwner === activePlayer) {
-                    let pieceType = cellContents[0];
-
-                    arrPossibleMoves = getPossibleMovesForPiece(row, col, pieceType);
+                    arrPossibleMoves = getPossibleMovesForPiece(row, col);
                     if(arrPossibleMoves.length === 0) {
                         console.log("This piece cannot move anywhere...");
                     }
@@ -334,9 +331,9 @@ class PossibleMove {
     }
 }
 
-// The third parameter is there only to avoid copypasting code
-// for the queen's movements, otherwise you could get the
-// same information directly from the chessboard
+// The third (optional) parameter allows to emulate
+// movements of a specific piece, useful for queen's movements.
+// If omitted the function will get the value from the chessboard
 function getPossibleMovesForPiece(row, col, pieceType) {
     if(!checkRowColValid(row, col))
     {
@@ -350,9 +347,9 @@ function getPossibleMovesForPiece(row, col, pieceType) {
         return null;
     }
 
-    // TODO this is a string, I foresee errors. Should be an enum or something else
-    // Se notes above this function
-    //let pieceType = cellContents[0];
+    if(!pieceType)
+        pieceType = cellContents[0];
+    // TODO I'd much prefer to do something like chessBoard[r][c].owner
     let pieceOwner = cellContents[1];
     
     let arrValidCells = [];
@@ -741,8 +738,7 @@ function isKingInDanger() {
         for (let c = 0; c <= MAX_COL; c++) {
             // For every piece on the chessboard...
             if(chessboard[r][c] != EMPTY_TILE) {
-                pieceType = chessboard[r][c][0];
-                arrPossibleMoves = getPossibleMovesForPiece(r, c, pieceType);
+                arrPossibleMoves = getPossibleMovesForPiece(r, c);
                 // ...check all the cells that piece can be moved to
                 for(let i=0; i<arrPossibleMoves.length; i++) {
                     // If the piece can capture an enemy...
