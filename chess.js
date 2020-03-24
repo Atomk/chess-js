@@ -261,6 +261,8 @@ function setSelectionMarkerActive(row, col, display) {
 }
 
 function changeTurn() {
+    gameState = GameStateEnum.SelectPiece;
+
     if(activePlayer === PlayerEnum.White)
         activePlayer = PlayerEnum.Black;
     else
