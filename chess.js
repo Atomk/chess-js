@@ -197,7 +197,7 @@ function handleCellSelected(row, col) {
         let isValidMove = false;
         // Check if the selected piece can be moved in the clicked cell
         for(let i=0; i<arrPossibleMoves.length; i++) {
-            if(arrPossibleMoves[i].row === row && arrPossibleMoves[i].col === col) {
+            if(arrPossibleMoves[i].row === row && arrPossibleMoves[i].col === col && !arrPossibleMoves[i].putsOwnKingInCheck) {
                 isValidMove = true;
                 break;
             }
@@ -312,10 +312,15 @@ class PossibleMove {
     }
 }
 
-// The third (optional) parameter allows to emulate
-// movements of a specific piece, useful for queen's movements.
-// If omitted the function will get the value from the chessboard
-function getPossibleMovesForPiece(row, col, pieceType) {
+
+/**
+ * Returns an array representing all the possible moves for a specific piece.
+ * @param {*} row 
+ * @param {*} col 
+ * @param {boolean} checkLegal Determines whether to check if moves are valid. Prevents the function from calling itselt infinitely when performing the validation check.
+ * @param {*} [pieceType] Allows to emulate movements of a specific piece, useful for queen's movements. If omitted, the function will get the value from the chessboard.
+ */
+function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
     if(!checkRowColValid(row, col))
     {
         console.error("Invalid row or column value");
@@ -681,15 +686,41 @@ function getPossibleMovesForPiece(row, col, pieceType) {
         }
     }
     else if(pieceType === PieceTypeEnum.Queen) {
-        let rookMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Rook);
-        let bishopMovements = getPossibleMovesForPiece(row, col, PieceTypeEnum.Bishop);
+        let rookMovements = getPossibleMovesForPiece(row, col, false, PieceTypeEnum.Rook);
+        let bishopMovements = getPossibleMovesForPiece(row, col, false, PieceTypeEnum.Bishop);
         arrValidCells = rookMovements.concat(bishopMovements);
     }
     else {
         console.error("Unrecognized piece type: " + pieceType);
     }
+    
+    if(checkLegal) {
+        for(let i = 0; i < arrValidCells.length; i++) {
+            if(doesMovePutKingInCheck(row, col, arrValidCells[i].row, arrValidCells[i].col)) {
+                arrValidCells[i].setIllegal();
+            }
+        }
+    }
 
     return arrValidCells;
+}
+
+/** Returns whether moving a piece on a certain square puts its king in check. */
+function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
+    let pieceOwner = chessboard[pieceRow][pieceCol][1];
+    let destinationCellContents = chessboard[destRow][destCol];
+    // Move piece on destination square
+    chessboard[destRow][destCol] = chessboard[pieceRow][pieceCol];
+    chessboard[pieceRow][pieceCol] = EMPTY_TILE;
+
+    let kingInCheck = isKingInCheck(pieceOwner);
+
+    // This function uses the original chessboard to avoid creating
+    // a copy of the chessboard matrix on every call
+    chessboard[pieceRow][pieceCol] = chessboard[destRow][destCol];
+    chessboard[destRow][destCol] = destinationCellContents;
+
+    return kingInCheck;
 }
 
 /** Returns true if the row and column indexes passed as arguments
@@ -720,7 +751,7 @@ function isKingInCheck(kingOwner) {
                     // Last parameter is false because is doesn't matter
                     // if the enemy will put their king to risk,
                     // if they capture the enemy king they win
-                    arrPossibleMoves = getPossibleMovesForPiece(r, c);
+                    arrPossibleMoves = getPossibleMovesForPiece(r, c, false);
                     // ...check all the cells that piece can be moved to
                     for (let i = 0; i < arrPossibleMoves.length; i++) {
                         // If the piece can capture another piece...
