@@ -203,7 +203,6 @@ function handleCellSelected(row, col) {
             }
         }
 
-        let selectedFriendUnit = false;
         if(isValidMove) {
             let kingDefeated = false;
             if(chessboard[row][col][0] === PieceTypeEnum.King) {
@@ -242,33 +241,8 @@ function handleCellSelected(row, col) {
                 changeTurn();
              }
         } else {
-            // If you clicked on a friend unit
-            if(cellContents !== EMPTY_TILE) {
-                let pieceOwner = cellContents[1];
-                // TODO This is the same code as above, DRY
-                if(pieceOwner === activePlayer) {
-                    arrPossibleMoves = getPossibleMovesForPiece(row, col);
-                    if(arrPossibleMoves.length === 0) {
-                        console.log("This piece cannot move anywhere...");
-                    }
-
-                    selectedFriendUnit = true;
-                }
-            }
-        }
-
-        if (gameState !== GameStateEnum.GameOver) {
-            // TODO should call this function again, not repeat code
-            if (selectedFriendUnit) {
-                setSelectionMarkerActive(row, col, true);
-                setDisplayDestinationActive(arrPossibleMoves, true);
-                selectedPiece.row = row;
-                selectedPiece.col = col;
-                gameState = GameStateEnum.SelectDestination;
-            } else {
-                resetSelectedPiece();
-                gameState = GameStateEnum.SelectPiece;
-            }
+            gameState = GameStateEnum.SelectPiece;
+            handleCellSelected(row, col);
         }
     }
 }
