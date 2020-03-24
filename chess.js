@@ -227,7 +227,7 @@ function handleCellSelected(row, col) {
                 gameState = GameStateEnum.GameOver;
              } else {
                 let enemyPlayer = (activePlayer === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
-                if(isKingInDanger(enemyPlayer)) {
+                if(isKingInCheck(enemyPlayer)) {
                     if(enemyPlayer === PlayerEnum.White) {
                         messageWarningElem.innerText = "⚠ White king check! ⚠";
                     } else {
@@ -705,7 +705,7 @@ function getHTMLCellByCoords(row, col) {
 }
 
 /** Returns whether a king can be captured by an enemy piece. */
-function isKingInDanger(kingOwner) {
+function isKingInCheck(kingOwner) {
     let arrPossibleMoves;
     let enemyRow, enemyCol;
 
