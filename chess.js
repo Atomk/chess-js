@@ -204,11 +204,6 @@ function handleCellSelected(row, col) {
         }
 
         if(isValidMove) {
-            let kingDefeated = false;
-            if(chessboard[row][col][0] === PieceTypeEnum.King) {
-                kingDefeated = true;
-            }
-
             chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
             chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_TILE;
 
@@ -216,28 +211,28 @@ function handleCellSelected(row, col) {
             getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
 
-            if(kingDefeated) {
-                if(activePlayer === PlayerEnum.White) {
-                    messageTurnElem.innerText = "🏆 White wins! 🏆";
-                } else {
-                    messageTurnElem.innerText = "🏆 Black wins! 🏆";
-                }
+            let enemyPlayer = (activePlayer === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
 
-                // TODO make all pieces unselectable (remove .selectable class)
-                gameState = GameStateEnum.GameOver;
-             } else {
-                let enemyPlayer = (activePlayer === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
-                if(isKingInCheck(enemyPlayer)) {
-                    if(enemyPlayer === PlayerEnum.White) {
-                        messageWarningElem.innerText = "⚠ White king check! ⚠";
-                    } else {
-                        messageWarningElem.innerText = "⚠ Black king check! ⚠";
-                    }
-                } else {
-                    // TODO: also hide on victory?
-                    messageWarningElem.innerText = "";
-                }
+            if(isKingInCheck(enemyPlayer)) {
+                console.log("Enemy king in check position. Checkmate?");
 
+                if(isCheckmate(enemyPlayer)) {
+                    messageTurnElem.innerText = (activePlayer === PlayerEnum.White)
+                        ? "🏆 White wins! 🏆"
+                        : "🏆 Black wins! 🏆";
+                    messageWarningElem.innerText = "Checkmate.";
+                    // TODO make all pieces unselectable (remove .selectable class)
+                    gameState = GameStateEnum.GameOver;
+                } else {
+                    messageWarningElem.innerText = (activePlayer === PlayerEnum.White)
+                        ? "⚠ Black king check! ⚠"
+                        : "⚠ White king check! ⚠";
+                }
+            } else {
+                messageWarningElem.innerText = "";
+            }
+
+            if(gameState !== GameStateEnum.GameOver) {
                 changeTurn();
              }
         } else {
@@ -775,6 +770,50 @@ function isKingInCheck(kingOwner) {
     }
 
     return false;
+}
+
+/**
+ * Returns whether a king is in checkmate position.
+ * @param {*} playerInCheck Owner of the king in check position.
+ */
+function isCheckmate(playerInCheck) {
+    // Checking king first, to avoid checking all the other pieces if possible
+    let kingPos = getKingPosition(playerInCheck);
+    let arrPossibleMoves = getPossibleMovesForPiece(kingPos.row, kingPos.col);
+    for (let i = 0; i < arrPossibleMoves.length; i++) {
+        if(!arrPossibleMoves[i].putsOwnKingInCheck) {
+            console.log("King can escape.");
+            return false;
+        }
+    }
+    
+    console.log("King has no legal moves. Checking other pieces.");
+
+    for (let r = 0; r <= MAX_ROW; r++) {
+        for (let c = 0; c <= MAX_COL; c++) {
+            // For every piece on the chessboard...
+            if (chessboard[r][c] != EMPTY_TILE) {
+                // If the piece is owned by the player whose king is in check...
+                if (chessboard[r][c][1] === playerInCheck) {
+                    // If the piece is not the king... (already checked it)
+                    if(chessboard[r][c][0] !== PieceTypeEnum.King) {
+                        // Check all possible moves for the piece...
+                        arrPossibleMoves = getPossibleMovesForPiece(r, c);
+                        for (let i = 0; i < arrPossibleMoves.length; i++) {
+                            // If the move can put the king out of check...
+                            if(!arrPossibleMoves[i].putsOwnKingInCheck) {
+                                console.log(`Checkmate can be avoided by piece at (${r},${c})`);
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    console.log("Checkmate.");
+    return true;
 }
 
 /** Returns the coordinates of the king of the specified color. */
