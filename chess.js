@@ -757,4 +757,20 @@ function isKingInDanger() {
     }
 
     return null;
+/** Returns the coordinates of the king of the specified color. */
+function getKingPosition(player) {
+    for (let r = 0; r <= MAX_ROW; r++) {
+        for (let c = 0; c <= MAX_COL; c++) {
+            if (chessboard[r][c] != EMPTY_TILE) {
+                // If the piece is owned by the specified player
+                if (chessboard[r][c][1] === player) {
+                    if(chessboard[r][c][0] === PieceTypeEnum.King) {
+                        return { row: r, col: c };
+                    }
+                }
+            }
+        }
+    }
+
+    return undefined;
 }
