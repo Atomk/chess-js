@@ -285,7 +285,12 @@ function setDisplayDestinationActive(arrPossibleMoves, display) {
 
         arrPossibleMoves.forEach((v) => {
             let cell = getHTMLCellByCoords(v.row, v.col);
-            let className = v.isEnemy ? "cell-move-enemy" : "cell-move-free";
+            let className;
+
+            if(v.putsOwnKingInCheck)
+                className = "cell-move-illegal";
+            else
+                className = v.isEnemy ? "cell-move-enemy" : "cell-move-free";
 
             if (display)
                 cell.classList.add(className);
