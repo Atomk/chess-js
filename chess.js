@@ -328,6 +328,11 @@ class PossibleMove {
         this.row = row;
         this.col = col;
         this.isEnemy = isEnemy;
+        this.putsOwnKingInCheck = false;
+    }
+
+    setIllegal() {
+        this.putsOwnKingInCheck = true;
     }
 }
 
