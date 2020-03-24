@@ -762,6 +762,8 @@ function isKingInDanger() {
     }
 
     return null;
+}
+
 /** Returns the coordinates of the king of the specified color. */
 function getKingPosition(player) {
     for (let r = 0; r <= MAX_ROW; r++) {
