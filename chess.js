@@ -235,7 +235,7 @@ function handleCellSelected(row, col) {
 }
 
 function setSelectionMarkerActive(row, col, display) {
-    if(!checkRowColValid) {
+    if(!checkRowColValid(row, col)) {
         console.error("Invalid arguments.");
         return;
     }
