@@ -227,9 +227,9 @@ function handleCellSelected(row, col) {
                 // TODO make all pieces unselectable (remove .selectable class)
                 gameState = GameStateEnum.GameOver;
              } else {
-                let kingInDangerCoords = isKingInDanger();
-                if(kingInDangerCoords) {
-                    if(chessboard[kingInDangerCoords.row][kingInDangerCoords.col][1] === PlayerEnum.White) {
+                let enemyPlayer = (activePlayer === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
+                if(isKingInDanger(enemyPlayer)) {
+                    if(enemyPlayer === PlayerEnum.White) {
                         messageWarningElem.innerText = "⚠ White king check! ⚠";
                     } else {
                         messageWarningElem.innerText = "⚠ Black king check! ⚠";
@@ -730,30 +730,31 @@ function getHTMLCellByCoords(row, col) {
     return document.getElementById(coordsToId(row, col));
 }
 
-// Called it like this because "checkCheck" is not a good idea
-function isKingInDanger() {
-    // When a player moves a piece,
-    // they can also put their own king in danger,
-    // so both player's pieces must be checked.
-    let pieceType;
+/** Returns whether a king can be captured by an enemy piece. */
+function isKingInDanger(kingOwner) {
     let arrPossibleMoves;
     let enemyRow, enemyCol;
 
     for (let r = 0; r <= MAX_ROW; r++) {
         for (let c = 0; c <= MAX_COL; c++) {
             // For every piece on the chessboard...
-            if(chessboard[r][c] != EMPTY_TILE) {
-                arrPossibleMoves = getPossibleMovesForPiece(r, c);
-                // ...check all the cells that piece can be moved to
-                for(let i=0; i<arrPossibleMoves.length; i++) {
-                    // If the piece can capture an enemy...
-                    if(arrPossibleMoves[i].isEnemy) {
-                        enemyRow = arrPossibleMoves[i].row;
-                        enemyCol = arrPossibleMoves[i].col;
-                        // ...and the enemy is a king...
-                        if(chessboard[enemyRow][enemyCol][0] === PieceTypeEnum.King) {
-                            // ...return its position in the chessboard
-                            return { row: enemyRow, col: enemyCol };
+            if (chessboard[r][c] != EMPTY_TILE) {
+                // ...owned by the king's enemy...
+                if (chessboard[r][c][1] !== kingOwner) {
+                    // Last parameter is false because is doesn't matter
+                    // if the enemy will put their king to risk,
+                    // if they capture the enemy king they win
+                    arrPossibleMoves = getPossibleMovesForPiece(r, c);
+                    // ...check all the cells that piece can be moved to
+                    for (let i = 0; i < arrPossibleMoves.length; i++) {
+                        // If the piece can capture another piece...
+                        if (arrPossibleMoves[i].isEnemy) {
+                            enemyRow = arrPossibleMoves[i].row;
+                            enemyCol = arrPossibleMoves[i].col;
+                            // ...and that piece is the king...
+                            if (chessboard[enemyRow][enemyCol][0] === PieceTypeEnum.King) {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -761,7 +762,7 @@ function isKingInDanger() {
         }
     }
 
-    return null;
+    return false;
 }
 
 /** Returns the coordinates of the king of the specified color. */
