@@ -159,17 +159,14 @@ function handleCellSelected(row, col) {
         return;
 
     if(gameState === GameStateEnum.SelectPiece) {
-            console.log(`Cell ${row}-${col}. Piece type: ${pieceType}`);
-    
         if(pieceAt(row, col) !== EMPTY_TILE) {
             if(pieceAt(row, col).owner === activePlayer) {
-                let arrPossibleMoves = getPossibleMovesForPiece(row, col);
-                if(arrPossibleMoves.length === 0) {
-                    console.log("This piece cannot move anywhere...");
-                }
+                console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
 
+                let arrPossibleMoves = getPossibleMovesForPiece(row, col);
                 setSelectionMarkerActive(row, col, true);
                 setDisplayDestinationActive(arrPossibleMoves, true);
+
                 selectedPiece.row = row;
                 selectedPiece.col = col;
                 gameState = GameStateEnum.SelectDestination;
@@ -186,7 +183,6 @@ function handleCellSelected(row, col) {
         }
         
         let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col);
-
         setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
         setDisplayDestinationActive(arrPossibleMoves, false);
 
@@ -240,7 +236,7 @@ function handleCellSelected(row, col) {
 
 function setSelectionMarkerActive(row, col, display) {
     if(!checkRowColValid) {
-        console.error("setSelectionMarkerActive: Invalid arguments.");
+        console.error("Invalid arguments.");
         return;
     }
 
