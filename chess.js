@@ -304,7 +304,6 @@ class PossibleMove {
     }
 }
 
-
 /**
  * Returns an array representing all the possible moves for a specific piece.
  * @param {*} row 
@@ -324,31 +323,20 @@ function getPossibleMovesForPiece(row, col, checkLegal = true) {
         console.warn("Cannot get moves for an empty cell");
         return null;
     }
-
-    let pieceType = pieceToMove.type;
     
     let arrMoves = [];
 
-    if(pieceType === PieceTypeEnum.Pawn) {
-        arrMoves = getPawnMoves(row, col);
-    }
-    else if(pieceType === PieceTypeEnum.Rook) {
-        arrMoves = getRookMoves(row, col);
-    }
-    else if(pieceType === PieceTypeEnum.Horse) {
-        arrMoves = getHorseMoves(row, col);
-    }
-    else if(pieceType === PieceTypeEnum.Bishop) {
-        arrMoves = getBishopMoves(row, col);
-    }
-    else if(pieceType === PieceTypeEnum.King) {
-        arrMoves = getKingMoves(row, col);
-    }
-    else if(pieceType === PieceTypeEnum.Queen) {
-        arrMoves = getRookMoves(row, col).concat(getBishopMoves(row, col));
-    }
-    else {
-        console.error("Unrecognized piece type: " + pieceType);
+    switch(pieceToMove.type) {
+        case PieceTypeEnum.Pawn: arrMoves = getPawnMoves(row, col); break;
+        case PieceTypeEnum.Horse: arrMoves = getHorseMoves(row, col); break;
+        case PieceTypeEnum.Bishop: arrMoves = getBishopMoves(row, col); break;
+        case PieceTypeEnum.Rook: arrMoves = getRookMoves(row, col); break;
+        case PieceTypeEnum.King: arrMoves = getKingMoves(row, col); break;
+        case PieceTypeEnum.Queen:
+            arrMoves = getRookMoves(row, col).concat(getBishopMoves(row, col));
+            break;
+        default:
+            console.error("Unrecognized piece type: " + pieceToMove.type);
     }
     
     if(checkLegal) {
