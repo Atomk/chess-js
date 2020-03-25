@@ -310,9 +310,8 @@ class PossibleMove {
  * @param {*} row 
  * @param {*} col 
  * @param {boolean} checkLegal Determines whether to check if moves are valid. Prevents the function from calling itselt infinitely when performing the validation check.
- * @param {*} [pieceType] Allows to emulate movements of a specific piece, useful for queen's movements. If omitted, the function will get the value from the chessboard.
  */
-function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
+function getPossibleMovesForPiece(row, col, checkLegal = true) {
     if(!checkRowColValid(row, col))
     {
         console.error("Invalid row or column value");
@@ -326,8 +325,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         return null;
     }
 
-    if(!pieceType)
-        pieceType = pieceToMove.type;
+    let pieceType = pieceToMove.type;
     
     let arrMoves = [];
 
@@ -347,9 +345,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         arrMoves = getKingMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Queen) {
-        let rookMovements = getPossibleMovesForPiece(row, col, false, PieceTypeEnum.Rook);
-        let bishopMovements = getPossibleMovesForPiece(row, col, false, PieceTypeEnum.Bishop);
-        arrMoves = rookMovements.concat(bishopMovements);
+        arrMoves = getRookMoves(row, col).concat(getBishopMoves(row, col));
     }
     else {
         console.error("Unrecognized piece type: " + pieceType);
