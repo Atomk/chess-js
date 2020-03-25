@@ -332,74 +332,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
     let arrMoves = [];
 
     if(pieceType === PieceTypeEnum.Pawn) {
-        // Player one is the player "below" (white), so white pawns can only go up
-        if(pieceToMove.owner === PlayerEnum.White) {
-            // If pawn can go above one step
-            if(row > 0) {
-                let cellContents;
-
-                // If cell up-left has enemy
-                if(col > 0) {
-                    cellContents = chessboard[row-1][col-1];
-                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceToMove.owner) {
-                        arrMoves.push(new PossibleMove(row-1, col-1, true));
-                    }
-                }
-                // If cell up-right has enemy
-                if(col < MAX_COL) {
-                    cellContents = chessboard[row-1][col+1];
-                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceToMove.owner) {
-                        arrMoves.push(new PossibleMove(row-1, col+1, true));
-                    }
-                }
-                
-                // If cell above is free
-                cellContents = chessboard[row-1][col];
-                if(cellContents === EMPTY_TILE) {
-                    arrMoves.push(new PossibleMove(row-1, col, false));
-
-                    // If the pawn is at its starting position and has two free cells above
-                    if(row === MAX_ROW-1) {
-                        cellContents = chessboard[row-2][col];
-                        if(cellContents === EMPTY_TILE)
-                            arrMoves.push(new PossibleMove(row-2, col, false));
-                    }
-                }
-            }
-        } else {
-            // If pawn can go below one step
-            if(row <= MAX_ROW) {
-                let cellContents;
-
-                // If cell down-left has enemy
-                if(col > 0) {
-                    cellContents = chessboard[row+1][col-1];
-                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceToMove.owner) {
-                        arrMoves.push(new PossibleMove(row+1, col-1, true));
-                    }
-                }
-                // If cell down-right has enemy
-                if(col < MAX_COL) {
-                    cellContents = chessboard[row+1][col+1];
-                    if(cellContents !== EMPTY_TILE && cellContents[1] !== pieceToMove.owner) {
-                        arrMoves.push(new PossibleMove(row+1, col+1, true));
-                    }
-                }
-                
-                // If cell below is free
-                cellContents = chessboard[row+1][col];
-                if(cellContents === EMPTY_TILE) {
-                    arrMoves.push(new PossibleMove(row+1, col, false));
-
-                    // If the pawn is at its starting position and has two free cells below
-                    if(row === 1) {
-                        cellContents = chessboard[row+2][col];
-                        if(cellContents === EMPTY_TILE)
-                            arrMoves.push(new PossibleMove(row+2, col, false));
-                    }
-                }
-            }
-        }
+        arrMoves = getPawnMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Rook) {
         let r, c;
@@ -690,6 +623,52 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         for(let i = 0; i < arrMoves.length; i++) {
             if(doesMovePutKingInCheck(row, col, arrMoves[i].row, arrMoves[i].col)) {
                 arrMoves[i].setIllegal();
+            }
+        }
+    }
+
+    return arrMoves;
+}
+
+function getPawnMoves(row, col) {
+    let pieceToMove = pieceAt(row, col);
+    // White pawns can only go up, black pawns can only go down
+    let direction = (pieceToMove.owner === PlayerEnum.White) ? -1 : 1;
+    let arrMoves = [];
+    let targetCell, r;
+
+    r = row + (1 * direction);
+
+    // If pawn can go one step forward
+    if(checkRowColValid(r, col)) {
+        // If cell forward-left has enemy
+        if(col > 0) {
+            targetCell = pieceAt(r, col-1);
+            if(targetCell !== EMPTY_TILE && targetCell.owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, col-1, true));
+            }
+        }
+        // If cell forward-right has enemy
+        if(col < MAX_COL) {
+            targetCell = pieceAt(r, col+1);
+            if(targetCell !== EMPTY_TILE && targetCell.owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, col+1, true));
+            }
+        }
+
+        // If cell forward is free
+        targetCell = pieceAt(r, col);
+        if(targetCell === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, col, false));
+
+            // TODO This will have to be changed when implementing custom chessboard
+            let startingRow = (pieceToMove.owner === PlayerEnum.White) ? MAX_ROW-1 : 1;
+            
+            // If the pawn is at its starting position and has two free cells fprward
+            if(row === startingRow) {
+                r = row + 2 * direction;
+                if(pieceAt(r, col) === EMPTY_TILE)
+                    arrMoves.push(new PossibleMove(r, col, false));
             }
         }
     }
