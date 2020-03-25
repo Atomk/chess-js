@@ -235,7 +235,7 @@ function handleCellSelected(row, col) {
 }
 
 function setSelectionMarkerActive(row, col, display) {
-    if(!checkRowColValid(row, col)) {
+    if(!inBounds(row, col)) {
         console.error("Invalid arguments.");
         return;
     }
@@ -311,7 +311,7 @@ class PossibleMove {
  * @param {boolean} checkLegal Determines whether to check if moves are valid. Prevents the function from calling itselt infinitely when performing the validation check.
  */
 function getPossibleMovesForPiece(row, col, checkLegal = true) {
-    if(!checkRowColValid(row, col))
+    if(!inBounds(row, col))
     {
         console.error("Invalid row or column value");
         return undefined;
@@ -360,7 +360,7 @@ function getPawnMoves(row, col) {
     r = row + (1 * direction);
 
     // If pawn can go one step forward
-    if(checkRowColValid(r, col)) {
+    if(inBounds(r, col)) {
         // If cell forward-left has enemy
         if(col > 0) {
             targetCell = pieceAt(r, col-1);
@@ -402,7 +402,7 @@ function getHorseMoves(row, col) {
     let target;
 
     function horseCheck(r, c) {
-        if(checkRowColValid(r, c)) {
+        if(inBounds(r, c)) {
             target = pieceAt(r, c);
             if(target === EMPTY_TILE) {
                 arrMoves.push(new PossibleMove(r, c, false));
@@ -432,7 +432,7 @@ function getBishopMoves(row, col) {
     // Up-left
     r = row-1;
     c = col-1;
-    while(checkRowColValid(r, c)) {
+    while(inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_TILE) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -447,7 +447,7 @@ function getBishopMoves(row, col) {
     // Up-right
     r = row-1;
     c = col+1;
-    while(checkRowColValid(r, c)) {
+    while(inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_TILE) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -461,7 +461,7 @@ function getBishopMoves(row, col) {
     // Bottom-left
     r = row+1;
     c = col-1;
-    while(checkRowColValid(r, c)) {
+    while(inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_TILE) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -475,7 +475,7 @@ function getBishopMoves(row, col) {
     // Bottom-right
     r = row+1;
     c = col+1;
-    while(checkRowColValid(r, c)) {
+    while(inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_TILE) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -668,7 +668,7 @@ function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
 
 /** Returns true if the row and column indexes passed as arguments
  * are in-bounds in the chessboard matrix. */
-function checkRowColValid(row, col) {
+function inBounds(row, col) {
     return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
 }
 
@@ -783,7 +783,7 @@ function getKingPosition(player) {
 /** Returns an object containing data for a specific piece,
  * or undefined if parameters are not valid. */
 function pieceAt(row, col) {
-    if(!checkRowColValid(row, col)) {
+    if(!inBounds(row, col)) {
         return undefined;
     } else {
         if(chessboard[row][col] === EMPTY_TILE) {
