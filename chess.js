@@ -335,67 +335,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         arrMoves = getPawnMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Rook) {
-        let r, c;
-        
-        // Bottom
-        r = row+1;
-        while(r <= MAX_ROW) {
-            // If cell is empty
-            if(chessboard[r][col] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, col, false));
-            } else {
-                // If cell contains an enemy unit
-                if(chessboard[r][col][1] !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, col, true));
-                }
-                // In any case this cell is not empty, so the rook
-                // cannot move beyond this point in this direction
-                break;
-            }
-            r++;
-        }
-
-        // Top
-        r = row-1;
-        while(r >= 0) {
-            if(chessboard[r][col] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, col, false));
-            } else {
-                if(chessboard[r][col][1] !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, col, true));
-                }
-                break;
-            }
-            r--;
-        }
-
-        // Right
-        c = col+1;
-        while(c <= MAX_COL) {
-            if(chessboard[row][c] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row, c, false));
-            } else {
-                if(chessboard[row][c][1] !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(row, c, true));
-                }
-                break;
-            }
-            c++;
-        }
-
-        // Left
-        c = col-1;
-        while(c >= 0) {
-            if(chessboard[row][c] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row, c, false));
-            } else {
-                if(chessboard[row][c][1] !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(row, c, true));
-                }
-                break;
-            }
-            c--;
-        }
+        arrMoves = getRookMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Horse) {
         arrMoves = getHorseMoves(row, col);
@@ -643,6 +583,74 @@ function getBishopMoves(row, col) {
             break;
         }
         r++, c++;
+    }
+
+    return arrMoves;
+}
+
+function getRookMoves(row, col) {
+    let arrMoves = [];
+    let pieceToMove = pieceAt(row, col);
+    let r, c;
+
+    // Bottom
+    r = row+1;
+    while(r <= MAX_ROW) {
+        // If cell is empty
+        if(chessboard[r][col] === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, col, false));
+        } else {
+            // If cell contains an enemy unit
+            if(chessboard[r][col][1] !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, col, true));
+            }
+            // In any case this cell is not empty, so the rook
+            // cannot move beyond this point in this direction
+            break;
+        }
+        r++;
+    }
+
+    // Top
+    r = row-1;
+    while(r >= 0) {
+        if(chessboard[r][col] === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, col, false));
+        } else {
+            if(chessboard[r][col][1] !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, col, true));
+            }
+            break;
+        }
+        r--;
+    }
+
+    // Right
+    c = col+1;
+    while(c <= MAX_COL) {
+        if(chessboard[row][c] === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(row, c, false));
+        } else {
+            if(chessboard[row][c][1] !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(row, c, true));
+            }
+            break;
+        }
+        c++;
+    }
+
+    // Left
+    c = col-1;
+    while(c >= 0) {
+        if(chessboard[row][c] === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(row, c, false));
+        } else {
+            if(chessboard[row][c][1] !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(row, c, true));
+            }
+            break;
+        }
+        c--;
     }
 
     return arrMoves;
