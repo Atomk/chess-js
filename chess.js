@@ -344,89 +344,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         arrMoves = getBishopMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.King) {
-        let r, c;
-        
-        r = row-1;
-        if(r >= 0) {
-            // Up
-            c = col;
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-
-            // Up left
-            c = col-1;
-            if(c >= 0) {
-                if(pieceAt(r, c) === EMPTY_TILE) {
-                    arrMoves.push(new PossibleMove(r, c, false));
-                } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-            }
-
-            // Up right
-            c = col+1;
-            if(c <= MAX_COL) {
-                if(pieceAt(r, c) === EMPTY_TILE) {
-                    arrMoves.push(new PossibleMove(r, c, false));
-                } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-            }
-        }
-
-        r = row+1;
-        if(r <= MAX_ROW) {
-            // Bottom
-            c = col;
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-
-            // Bottom left
-            c = col-1;
-            if(c >= 0) {
-                if(pieceAt(r, c) === EMPTY_TILE) {
-                    arrMoves.push(new PossibleMove(r, c, false));
-                } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-            }
-
-            // Bottom right
-            c = col+1;
-            if(c <= MAX_COL) {
-                if(pieceAt(r, c) === EMPTY_TILE) {
-                    arrMoves.push(new PossibleMove(r, c, false));
-                } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-            }
-        }
-
-        // Left
-        r = row;
-        c = col-1;
-        if(c >= 0) {
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-        }
-        // Right
-        c = col+1;
-        if(c <= MAX_COL) {
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-        }
+        arrMoves = getKingMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Queen) {
         let rookMovements = getPossibleMovesForPiece(row, col, false, PieceTypeEnum.Rook);
@@ -651,6 +569,96 @@ function getRookMoves(row, col) {
             break;
         }
         c--;
+    }
+
+    return arrMoves;
+}
+
+function getKingMoves(row, col) {
+    let arrMoves = [];
+    let pieceToMove = pieceAt(row, col);
+    let r, c;
+        
+    r = row-1;
+    if(r >= 0) {
+        // Up
+        c = col;
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+            arrMoves.push(new PossibleMove(r, c, true));
+        }
+
+        // Up left
+        c = col-1;
+        if(c >= 0) {
+            if(pieceAt(r, c) === EMPTY_TILE) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+        }
+
+        // Up right
+        c = col+1;
+        if(c <= MAX_COL) {
+            if(pieceAt(r, c) === EMPTY_TILE) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+        }
+    }
+
+    r = row+1;
+    if(r <= MAX_ROW) {
+        // Bottom
+        c = col;
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+            arrMoves.push(new PossibleMove(r, c, true));
+        }
+
+        // Bottom left
+        c = col-1;
+        if(c >= 0) {
+            if(pieceAt(r, c) === EMPTY_TILE) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+        }
+
+        // Bottom right
+        c = col+1;
+        if(c <= MAX_COL) {
+            if(pieceAt(r, c) === EMPTY_TILE) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+        }
+    }
+
+    // Left
+    r = row;
+    c = col-1;
+    if(c >= 0) {
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+            arrMoves.push(new PossibleMove(r, c, true));
+        }
+    }
+    // Right
+    c = col+1;
+    if(c <= MAX_COL) {
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else if(pieceAt(r, c).owner !== pieceToMove.owner) {
+            arrMoves.push(new PossibleMove(r, c, true));
+        }
     }
 
     return arrMoves;
