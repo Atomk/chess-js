@@ -401,66 +401,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         arrMoves = getHorseMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Bishop) {
-        // TODO pretty clean, but a lot of repeated code
-        let r, c;
-        
-        // Up-left
-        r = row-1;
-        c = col-1;
-        while(checkRowColValid(r, c)) {
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else {
-                if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-                // This is not a free cell, so the piece cannot move anymore in this direction
-                break;
-            }
-            r--, c--;
-        }
-        // Up-right
-        r = row-1;
-        c = col+1;
-        while(checkRowColValid(r, c)) {
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else {
-                if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-                break;
-            }
-            r--, c++;
-        }
-        // Bottom-left
-        r = row+1;
-        c = col-1;
-        while(checkRowColValid(r, c)) {
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else {
-                if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-                break;
-            }
-            r++, c--;
-        }
-        // Bottom-right
-        r = row+1;
-        c = col+1;
-        while(checkRowColValid(r, c)) {
-            if(pieceAt(r, c) === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else {
-                if(pieceAt(r, c).owner !== pieceToMove.owner) {
-                    arrMoves.push(new PossibleMove(r, c, true));
-                }
-                break;
-            }
-            r++, c++;
-        }
+        arrMoves = getBishopMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.King) {
         let r, c;
@@ -637,6 +578,72 @@ function getHorseMoves(row, col) {
     horseCheck(row-1, col-2); // Left down
     horseCheck(row+1, col+2); // Right up
     horseCheck(row-1, col+2); // Right down
+
+    return arrMoves;
+}
+
+function getBishopMoves(row, col) {
+    let arrMoves = [];
+    let pieceToMove = pieceAt(row, col);
+    let r, c;
+        
+    // Up-left
+    r = row-1;
+    c = col-1;
+    while(checkRowColValid(r, c)) {
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else {
+            if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+            // This is not a free cell, so the piece cannot move anymore in this direction
+            break;
+        }
+        r--, c--;
+    }
+    // Up-right
+    r = row-1;
+    c = col+1;
+    while(checkRowColValid(r, c)) {
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else {
+            if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+            break;
+        }
+        r--, c++;
+    }
+    // Bottom-left
+    r = row+1;
+    c = col-1;
+    while(checkRowColValid(r, c)) {
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else {
+            if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+            break;
+        }
+        r++, c--;
+    }
+    // Bottom-right
+    r = row+1;
+    c = col+1;
+    while(checkRowColValid(r, c)) {
+        if(pieceAt(r, c) === EMPTY_TILE) {
+            arrMoves.push(new PossibleMove(r, c, false));
+        } else {
+            if(pieceAt(r, c).owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+            break;
+        }
+        r++, c++;
+    }
 
     return arrMoves;
 }
