@@ -398,70 +398,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true, pieceType) {
         }
     }
     else if(pieceType === PieceTypeEnum.Horse) {
-        // Up left
-        if(row-2 >= 0 && col-1 >= 0) {
-            if(chessboard[row-2][col-1] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row-2, col-1, false));
-            } else if(chessboard[row-2][col-1][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row-2, col-1, true));
-            }
-        }
-        // Up right
-        if(row-2 >= 0 && col+1 <= MAX_COL) {
-            if(chessboard[row-2][col+1] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row-2, col+1, false));
-            } else if(chessboard[row-2][col+1][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row-2, col+1, true));
-            }
-        }
-        // Bottom left
-        if(row+2 <= MAX_ROW && col-1 >= 0) {
-            if(chessboard[row+2][col-1] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row+2, col-1, false));
-            } else if(chessboard[row+2][col-1][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row+2, col-1, true));
-            }
-        }
-        // Bottom right
-        if(row+2 <= MAX_ROW && col+1 <= MAX_COL) {
-            if(chessboard[row+2][col+1] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row+2, col+1, false));
-            } else if(chessboard[row+2][col+1][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row+2, col+1, true));
-            }
-        }
-        // Left up
-        if(row+1 <= MAX_ROW && col-2 >= 0) {
-            if(chessboard[row+1][col-2] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row+1, col-2, false));
-            } else if(chessboard[row+1][col-2][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row+1, col-2, true));
-            }
-        }
-        // Left down
-        if(row-1 >= 0 && col-2 >= 0) {
-            if(chessboard[row-1][col-2] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row-1, col-2, false));
-            } else if(chessboard[row-1][col-2][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row-1, col-2, true));
-            }
-        }
-        // Right up
-        if(row+1 <= MAX_ROW && col+2 <= MAX_COL) {
-            if(chessboard[row+1][col+2] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row+1, col+2, false));
-            } else if(chessboard[row+1][col+2][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row+1, col+2, true));
-            }
-        }
-        // Right down
-        if(row-1 >= 0 && col+2 <= MAX_COL) {
-            if(chessboard[row-1][col+2] === EMPTY_TILE) {
-                arrMoves.push(new PossibleMove(row-1, col+2, false));
-            } else if(chessboard[row-1][col+2][1] !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(row-1, col+2, true));
-            }
-        }
+        arrMoves = getHorseMoves(row, col);
     }
     else if(pieceType === PieceTypeEnum.Bishop) {
         // TODO pretty clean, but a lot of repeated code
@@ -672,6 +609,34 @@ function getPawnMoves(row, col) {
             }
         }
     }
+
+    return arrMoves;
+}
+
+function getHorseMoves(row, col) {
+    let arrMoves = [];
+    let pieceToMove = pieceAt(row, col);
+    let target;
+
+    function horseCheck(r, c) {
+        if(checkRowColValid(r, c)) {
+            target = pieceAt(r, c);
+            if(target === EMPTY_TILE) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else if(target.owner !== pieceToMove.owner) {
+                arrMoves.push(new PossibleMove(r, c, true));
+            }
+        }
+    }
+
+    horseCheck(row-2, col-1); // Up left
+    horseCheck(row-2, col+1); // Up right
+    horseCheck(row+2, col-1); // Bottom left
+    horseCheck(row+2, col+1); // Bottom right
+    horseCheck(row+1, col-2); // Left up
+    horseCheck(row-1, col-2); // Left down
+    horseCheck(row+1, col+2); // Right up
+    horseCheck(row-1, col+2); // Right down
 
     return arrMoves;
 }
