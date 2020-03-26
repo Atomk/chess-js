@@ -872,4 +872,4 @@ function performAITurn(aiColor) {
     handleCellSelected(bestMoveObj.pieceRow, bestMoveObj.pieceCol);
     handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
 }
-}
+
