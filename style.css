@@ -7,15 +7,23 @@ h1 {
     text-align: center;
 }
 
+#messages-container {
+    margin: 20px 0;
+}
 .message {
     margin-top: 12px;
     margin-bottom: 0;
     font-family: monospace;
     font-size: 1.2em;
+    /* Prevents the element from collapsing if empty */
+    min-height: 1.3em;
     text-align: center;
 }
-#msg-turn {
-    margin-top: 20px;
+
+#options {
+    font-family: monospace;
+    font-size: 1.2em;
+    text-align: center;
 }
 
 table {

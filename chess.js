@@ -51,6 +51,7 @@ const EMPTY_CELL = "";
 
 let messageTurnElem;
 let messageWarningElem;
+let checkboxAIEnabledElem;
 
 let gameState;
 let activePlayer;
@@ -72,6 +73,11 @@ document.body.onload = function() {
     messageTurnElem = document.getElementById("msg-turn");
     messageWarningElem = document.getElementById("msg-warning");
     setPlayerTurnText();
+
+    checkboxAIEnabledElem = document.getElementById("checkbox-ai-enabled");
+    checkboxAIEnabledElem.onclick = () => {
+        aiOpponent = checkboxAIEnabledElem.checked;
+    };
 }
 
 function initGame() {
