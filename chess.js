@@ -60,6 +60,8 @@ let selectedPiece = {
     col: -1
 };
 
+let aiOpponent = true;
+
 document.body.onload = function() {
     // Must be called before everything else because it initializes the chessboard
     initGame();
@@ -250,10 +252,14 @@ function setSelectionMarkerActive(row, col, display) {
 function changeTurn() {
     gameState = GameStateEnum.SelectPiece;
 
-    if(activePlayer === PlayerEnum.White)
+    if(activePlayer === PlayerEnum.White) {
         activePlayer = PlayerEnum.Black;
-    else
+        if(aiOpponent) {
+            performAITurn(activePlayer);
+        }
+    } else {
         activePlayer = PlayerEnum.White;
+    }
 
     setPlayerTurnText();
 }
@@ -795,4 +801,75 @@ function pieceAt(row, col) {
             };
         }
     }
+}
+
+/**
+ * Chooses automatically which piece to move.
+ * @param {*} aiColor Determines which pieces are owned by the AI
+ */
+function performAITurn(aiColor) {
+    // AI checks all of its pieces from top-left corner to bottom.
+    // If some pieces can capture an enemy, captures the strongest enemy
+    // If no enemy can be captured, makes a random move
+    // If AI's king is in check, the same logic applies, AI can only perform valid moves
+    // Checkmate function is called before changing turn,
+    // so AI will always have valid moves (except in case of stalemate)
+    // TODO handle stalemate
+
+    // TODO this should be outside the function
+    const aiMoveValue = {};
+    aiMoveValue[EMPTY_CELL] = 0;
+    aiMoveValue[PieceTypeEnum.Pawn] = 1;
+    aiMoveValue[PieceTypeEnum.Horse] = 2;
+    aiMoveValue[PieceTypeEnum.Bishop] = 3;
+    aiMoveValue[PieceTypeEnum.Rook] = 4;
+    aiMoveValue[PieceTypeEnum.Queen] = 5;
+    aiMoveValue[PieceTypeEnum.King] = 6;
+    Object.freeze(aiMoveValue);
+
+    let piece, target, arrPossibleMoves;
+    
+    let aiPossibleMoves = [];
+    let maxMoveValue = -1;
+    let bestMoveIndex;
+
+    for (let r = 0; r <= MAX_ROW; r++) {
+        for (let c = 0; c <= MAX_COL; c++) {
+            piece = pieceAt(r, c);
+            if (piece !== EMPTY_CELL) {
+                if (piece.owner === aiColor) {
+                    arrPossibleMoves = getPossibleMovesForPiece(r, c);
+                    arrPossibleMoves.forEach((move) => {
+                        if(!move.putsOwnKingInCheck) {
+                            aiPossibleMoves.push({
+                                pieceRow: r, pieceCol: c,
+                                targetRow: move.row, targetCol: move.col
+                            });
+
+                            // TODO pieceAt returns a string if it's an empty cell, you can't access the "type" property on that
+                            target = pieceAt(move.row, move.col).type || EMPTY_CELL;
+                            if(aiMoveValue[target] > maxMoveValue) {
+                                maxMoveValue = aiMoveValue[target];
+                                bestMoveIndex = aiPossibleMoves.length-1;
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    // If the only possible moves are on empty squares, choose a move randomly
+    if(maxMoveValue === aiMoveValue[EMPTY_CELL]) {
+        bestMoveIndex = Math.floor(Math.random() * aiPossibleMoves.length);
+    }
+
+    let bestMoveObj = aiPossibleMoves[bestMoveIndex];
+    console.log(`AI moves piece at ${bestMoveObj.pieceRow}-${bestMoveObj.pieceCol}`
+        + `to square ${bestMoveObj.targetRow}-${bestMoveObj.targetCol}`)
+
+    // TODO should disable graphic functions like setSelectionMarkerActive when AI is playing its turn
+    handleCellSelected(bestMoveObj.pieceRow, bestMoveObj.pieceCol);
+    handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
+}
 }
