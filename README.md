@@ -1,7 +1,7 @@
 chess-js
 =======
 
-The chess game everyone knows and loves, in pure vanilla JavaScript. [Try it out!](https://atomk.github.io/chess-js/)
+The chess game everyone knows and loves, in vanilla JavaScript. [Try it out!](https://atomk.github.io/chess-js/)
 
 ## To-do
 - Button to restart game
