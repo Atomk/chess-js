@@ -685,6 +685,24 @@ function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
     return kingInCheck;
 }
 
+/** Returns whether moving a piece puts a square in danger. */
+function doesMoveMakeSquareCapturable(pieceRow, pieceCol, destRow, destCol, squareRow, squareCol) {
+    let enemyPlayer = getEnemy(pieceAt(pieceRow, pieceCol).owner);
+    let destinationCellContents = chessboard[destRow][destCol];
+    // Move piece on destination square
+    chessboard[destRow][destCol] = chessboard[pieceRow][pieceCol];
+    chessboard[pieceRow][pieceCol] = EMPTY_CELL;
+
+    let result = canSquareBeCaptured(squareRow, squareCol, enemyPlayer);
+
+    // This function uses the original chessboard to avoid creating
+    // a copy of the chessboard matrix on every call
+    chessboard[pieceRow][pieceCol] = chessboard[destRow][destCol];
+    chessboard[destRow][destCol] = destinationCellContents;
+
+    return result;
+}
+
 /** Returns true if the row and column indexes passed as arguments
  * are in-bounds in the chessboard matrix. */
 function inBounds(row, col) {
@@ -826,10 +844,13 @@ function pieceAt(row, col) {
  * @param {*} aiColor Determines which pieces are owned by the AI
  */
 function performAITurn(aiColor) {
-    // AI checks all of its pieces from top-left corner to bottom.
-    // If some pieces can capture an enemy, captures the strongest enemy
-    // If no enemy can be captured, makes a random move
-    // If AI's king is in check, the same logic applies, AI can only perform valid moves
+    // AI checks all of its possible moves
+    // Every move gets a value, which increases if an enemy piece can be captured...
+    // ...and decreases if moving the piece there makes it risk capture
+    // Ai chooses the move with the best value
+    // If multiple moves have the same best value, one of those is chosen randomly
+    // If AI's king is in check, the same logic applies,
+    // AI can only perform valid moves and cannot put its king in check
     // Checkmate function is called before changing turn,
     // so AI will always have valid moves (except in case of stalemate)
     // TODO handle stalemate
@@ -848,27 +869,39 @@ function performAITurn(aiColor) {
     let piece, target, arrPossibleMoves;
     
     let aiPossibleMoves = [];
-    let maxMoveValue = -1;
-    let bestMoveIndex;
+    let moveValue, maxMoveValue = -100, minMoveValue = 100;
 
     for (let r = 0; r <= MAX_ROW; r++) {
         for (let c = 0; c <= MAX_COL; c++) {
             piece = pieceAt(r, c);
             if (piece !== EMPTY_CELL) {
                 if (piece.owner === aiColor) {
+                    // TODO: add a way to move away pieces if they risk being captured in their current position
                     arrPossibleMoves = getPossibleMovesForPiece(r, c);
                     arrPossibleMoves.forEach((move) => {
                         if(!move.putsOwnKingInCheck) {
-                            aiPossibleMoves.push({
-                                pieceRow: r, pieceCol: c,
-                                targetRow: move.row, targetCol: move.col
-                            });
-
                             // TODO pieceAt returns a string if it's an empty cell, you can't access the "type" property on that
                             target = pieceAt(move.row, move.col).type || EMPTY_CELL;
-                            if(aiMoveValue[target] > maxMoveValue) {
-                                maxMoveValue = aiMoveValue[target];
-                                bestMoveIndex = aiPossibleMoves.length-1;
+                            
+                            moveValue = aiMoveValue[target];
+                            // If the king can be captured, we don't care about consequences
+                            if(target.type !== PieceTypeEnum.King) {
+                                // Discourage sacrificing pieces by moving on a "capturable" square
+                                if(doesMoveMakeSquareCapturable(r, c, move.row, move.col, move.row, move.col))
+                                    moveValue -= aiMoveValue[piece.type];
+                            }
+
+                            aiPossibleMoves.push({
+                                pieceRow: r, pieceCol: c,
+                                targetRow: move.row, targetCol: move.col,
+                                value: moveValue
+                            });
+
+                            if(moveValue > maxMoveValue) {
+                                maxMoveValue = moveValue;
+                            }
+                            if(moveValue < minMoveValue) {
+                                minMoveValue = moveValue;
                             }
                         }
                     });
@@ -877,17 +910,49 @@ function performAITurn(aiColor) {
         }
     }
 
-    // If the only possible moves are on empty squares, choose a move randomly
-    if(maxMoveValue === aiMoveValue[EMPTY_CELL]) {
-        bestMoveIndex = Math.floor(Math.random() * aiPossibleMoves.length);
-    }
+    // Get just the moves with the best value, and choose one of those randomly
+    let bestMoves = aiPossibleMoves.filter(v => v.value === maxMoveValue);
+    console.log(`AI: Max value: ${maxMoveValue}. Moves with this value: ${bestMoves.length}`);
+    let moveIndex = Math.floor(Math.random() * bestMoves.length);
 
-    let bestMoveObj = aiPossibleMoves[bestMoveIndex];
+    let bestMoveObj = bestMoves[moveIndex];
     console.log(`AI moves piece at ${bestMoveObj.pieceRow}-${bestMoveObj.pieceCol}`
-        + `to square ${bestMoveObj.targetRow}-${bestMoveObj.targetCol}`)
+        + ` to square ${bestMoveObj.targetRow}-${bestMoveObj.targetCol}. Move value: ${maxMoveValue}`)
 
     // TODO should disable graphic functions like setSelectionMarkerActive when AI is playing its turn
     handleCellSelected(bestMoveObj.pieceRow, bestMoveObj.pieceCol);
     handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
+}
+
+function canSquareBeCaptured(row, col, player) {
+    if(typeof(player) === undefined) {
+        console.error("Missing argument.");
+        return undefined;
+    }
+
+    let possibleMoves;
+
+    for (let r = 0; r <= MAX_ROW; r++) {
+        for (let c = 0; c <= MAX_COL; c++) {
+            // For every piece on the chessboard...
+            if (pieceAt(r, c) !== EMPTY_CELL) {
+                // ...owned by the specified player...
+                if (pieceAt(r, c).owner === player) {
+                    possibleMoves = getPossibleMovesForPiece(r, c);
+                    // ...check all the cells that piece can be moved to
+                    for (let i = 0; i < possibleMoves.length; i++) {
+                        if (!possibleMoves[i].putsOwnKingInCheck) {
+                            // If the piece can be moved to the selected square...
+                            if(possibleMoves[i].row === row && possibleMoves[i].col === col) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
