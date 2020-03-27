@@ -39,15 +39,43 @@ htmlPiecesUnicodeBlack[PieceTypeEnum.Rook] = "♜";
 htmlPiecesUnicodeBlack[PieceTypeEnum.King] = "♚";
 htmlPiecesUnicodeBlack[PieceTypeEnum.Queen] = "♛";
 
-const GRID_SIZE = 8;
+const EMPTY_CELL = "";
+
+const chessboardsList = {
+    _8x8Standard: [
+        ["r2", "h2", "b2", "q2", "k2", "b2", "h2", "r2"],
+        ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
+        ["r1", "h1", "b1", "q1", "k1", "b1", "h1", "r1"]
+    ],
+    _6x6SimplerNoKnights: [
+        ["r2", "b2", "q2", "k2", "b2", "r2"],
+        ["p2", "p2", "p2", "p2", "p2", "p2"],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        ["p1", "p1", "p1", "p1", "p1", "p1"],
+        ["r1", "b1", "q1", "k1", "b1", "r1"]
+    ],
+    _5x5BabyChess: [
+        ["k2", "q2", "b2", "h2", "r2"],
+        ["p2", "p2", "p2", "p2", "p2"],
+        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        ["p1", "p1", "p1", "p1", "p1"],
+        ["r1", "h1", "b1", "q1", "k1"]
+    ]
+};
+Object.freeze(chessboardsList);
+
 // I made these because sometimes I forget to check array indexes
 // against "GRID_SIZE-1" instead of just "GRID_SIZE"
 // There are two different variables because in the future
 // I want to support different grid sizes
-const MAX_COL = GRID_SIZE - 1;
-const MAX_ROW = GRID_SIZE - 1;
-
-const EMPTY_CELL = "";
+let MAX_COL;
+let MAX_ROW;
 
 let messageTurnElem;
 let messageWarningElem;
@@ -67,7 +95,7 @@ document.body.onload = function() {
     // Must be called before everything else because it initializes the chessboard
     initGame();
 
-    let table = createChessboardTableHTML(GRID_SIZE);
+    let table = createChessboardTableHTML(MAX_ROW+1, MAX_COL+1);
     document.getElementById("grid-container").appendChild(table);
 
     messageTurnElem = document.getElementById("msg-turn");
@@ -80,17 +108,20 @@ document.body.onload = function() {
     };
 }
 
-function initGame() {
-    chessboard = [
-        ["r2", "h2", "b2", "q2", "k2", "b2", "h2", "r2"],
-        ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
-        ["r1", "h1", "b1", "q1", "k1", "b1", "h1", "r1"]
-    ];
+/**
+ * Resets game variables to their initial state.
+ * @param {*} [chessboardMatrix] The chessboard configuration to use. If not passed, a default 8x8 chessboard will be used.
+ */
+function initGame(chessboardMatrix) {
+    if(chessboardMatrix)
+        chessboard = chessboardMatrix;
+    else
+        chessboard = chessboardsList._8x8Standard;
+
+    let numRows = chessboard.length;
+    let numCols = chessboard[0].length;
+    MAX_ROW = numRows - 1;
+    MAX_COL = numCols - 1;
 
     activePlayer = PlayerEnum.White;
     gameState = GameStateEnum.SelectPiece;
@@ -102,17 +133,17 @@ function resetSelectedPiece() {
     selectedPiece.col = -1;
 }
 
-function createChessboardTableHTML(gridSize) {
+function createChessboardTableHTML(numRows, numCols) {
     let table = document.createElement("table");
 
     // Determines color of the first cell in the row. It's initialized
     // with TRUE because the top-left cell in the chessboard should be white
     let isFirstCellInRowWhite = true;
 
-    for(let row = 0; row < gridSize; row++) {
+    for(let row = 0; row < numRows; row++) {
         let tr = document.createElement("tr");
         
-        for(let col = 0; col < gridSize; col++) {
+        for(let col = 0; col < numCols; col++) {
             let td = document.createElement("td");
             // This makes it easier to recognize which cell was clicked
             td.id = coordsToId(row, col);
