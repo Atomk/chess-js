@@ -287,7 +287,7 @@ function setPlayerTurnText() {
 /** Allows to show/hide where a piece can be moved. */
 function setDisplayDestinationActive(arrPossibleMoves, display) {
     if (arrPossibleMoves.length > 0) {
-        console.log((display ? "Showing" : "Hiding") + " possible moves.");
+        //console.log((display ? "Showing" : "Hiding") + " possible moves.");
 
         arrPossibleMoves.forEach((v) => {
             let cell = getHTMLCellByCoords(v.row, v.col);
