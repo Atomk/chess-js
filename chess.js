@@ -169,11 +169,14 @@ function handleCellSelected(row, col) {
     if(gameState === GameStateEnum.SelectPiece) {
         if(pieceAt(row, col) !== EMPTY_CELL) {
             if(pieceAt(row, col).owner === activePlayer) {
-                console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
+                // Don't use these functions during AI turn
+                if(!(aiOpponent && activePlayer === PlayerEnum.Black)) {
+                    console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
 
-                let arrPossibleMoves = getPossibleMovesForPiece(row, col);
-                setSelectionMarkerActive(row, col, true);
-                setDisplayDestinationActive(arrPossibleMoves, true);
+                    let arrPossibleMoves = getPossibleMovesForPiece(row, col);
+                    setSelectionMarkerActive(row, col, true);
+                    setDisplayDestinationActive(arrPossibleMoves, true);
+                }
 
                 selectedPiece.row = row;
                 selectedPiece.col = col;
@@ -191,8 +194,12 @@ function handleCellSelected(row, col) {
         }
         
         let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col);
-        setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
-        setDisplayDestinationActive(arrPossibleMoves, false);
+
+        // Don't use these functions during AI turn
+        if(!(aiOpponent && activePlayer === PlayerEnum.Black)) {
+            setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
+            setDisplayDestinationActive(arrPossibleMoves, false);
+        }
 
         let isValidMove = false;
         // Check if the selected piece can be moved in the clicked cell
