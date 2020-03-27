@@ -218,7 +218,7 @@ function handleCellSelected(row, col) {
             getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
 
-            let enemyPlayer = (activePlayer === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
+            let enemyPlayer = getEnemy(activePlayer);
 
             if(isKingInCheck(enemyPlayer)) {
                 console.log("Enemy king in check position. Checkmate?");
@@ -689,6 +689,11 @@ function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
  * are in-bounds in the chessboard matrix. */
 function inBounds(row, col) {
     return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
+}
+
+/** Returns the opponent of a specific player. */
+function getEnemy(player) {
+    return (player === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
 }
 
 function coordsToId(row, col) {
