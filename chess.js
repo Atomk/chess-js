@@ -249,6 +249,22 @@ function handleCellSelected(row, col) {
             getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
 
+            let piece = pieceAt(row, col);
+            if(piece.type === PieceTypeEnum.Pawn) {
+                let promotionWhite = (piece.owner === PlayerEnum.White && row === 0)
+                let promotionBlack = (piece.owner === PlayerEnum.Black && row === MAX_ROW);
+                if(promotionWhite || promotionBlack) {
+                    let promotionType = PieceTypeEnum.Queen;
+                    // TODO allow choosing what piece to promote to
+                    chessboard[row][col] = `${promotionType}${piece.owner}`;
+                    // Visually replaces the pawn with the new piece
+                    if(piece.owner === PlayerEnum.White)
+                        getHTMLCellByCoords(row, col).firstChild.innerText = htmlPiecesUnicodeWhite[promotionType];
+                    else
+                        getHTMLCellByCoords(row, col).firstChild.innerText = htmlPiecesUnicodeBlack[promotionType];
+                }
+            }
+
             let enemyPlayer = getEnemy(activePlayer);
 
             if(isKingInCheck(enemyPlayer)) {
