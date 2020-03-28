@@ -3,7 +3,7 @@
 // https://stackoverflow.com/questions/287903/what-is-the-preferred-syntax-for-defining-enums-in-javascript
 const PieceTypeEnum = {
     "Pawn": "p",
-    "Horse": "h",
+    "Knight": "h",  // Useng the "h" for "horse", since "k" is the king
     "Bishop": "b",
     "Rook": "r",
     "King": "k",
@@ -25,7 +25,7 @@ Object.freeze(GameStateEnum);
 
 const htmlPiecesUnicodeWhite = {};
 htmlPiecesUnicodeWhite[PieceTypeEnum.Pawn] = "♙";
-htmlPiecesUnicodeWhite[PieceTypeEnum.Horse] = "♘";
+htmlPiecesUnicodeWhite[PieceTypeEnum.Knight] = "♘";
 htmlPiecesUnicodeWhite[PieceTypeEnum.Bishop] = "♗‍";
 htmlPiecesUnicodeWhite[PieceTypeEnum.Rook] = "♖";
 htmlPiecesUnicodeWhite[PieceTypeEnum.King] = "♔";
@@ -33,7 +33,7 @@ htmlPiecesUnicodeWhite[PieceTypeEnum.Queen] = "♕";
 
 const htmlPiecesUnicodeBlack = {};
 htmlPiecesUnicodeBlack[PieceTypeEnum.Pawn] = "♟";
-htmlPiecesUnicodeBlack[PieceTypeEnum.Horse] = "♞";
+htmlPiecesUnicodeBlack[PieceTypeEnum.Knight] = "♞";
 htmlPiecesUnicodeBlack[PieceTypeEnum.Bishop] = "♝";
 htmlPiecesUnicodeBlack[PieceTypeEnum.Rook] = "♜";
 htmlPiecesUnicodeBlack[PieceTypeEnum.King] = "♚";
@@ -394,7 +394,7 @@ function getPossibleMovesForPiece(row, col, checkLegal = true) {
 
     switch(pieceToMove.type) {
         case PieceTypeEnum.Pawn: arrMoves = getPawnMoves(row, col); break;
-        case PieceTypeEnum.Horse: arrMoves = getHorseMoves(row, col); break;
+        case PieceTypeEnum.Knight: arrMoves = getKnightMoves(row, col); break;
         case PieceTypeEnum.Bishop: arrMoves = getBishopMoves(row, col); break;
         case PieceTypeEnum.Rook: arrMoves = getRookMoves(row, col); break;
         case PieceTypeEnum.King: arrMoves = getKingMoves(row, col); break;
@@ -462,12 +462,12 @@ function getPawnMoves(row, col) {
     return arrMoves;
 }
 
-function getHorseMoves(row, col) {
+function getKnightMoves(row, col) {
     let arrMoves = [];
     let pieceToMove = pieceAt(row, col);
     let target;
 
-    function horseCheck(r, c) {
+    function knightCheck(r, c) {
         if(inBounds(r, c)) {
             target = pieceAt(r, c);
             if(target === EMPTY_CELL) {
@@ -478,14 +478,14 @@ function getHorseMoves(row, col) {
         }
     }
 
-    horseCheck(row-2, col-1); // Up left
-    horseCheck(row-2, col+1); // Up right
-    horseCheck(row+2, col-1); // Bottom left
-    horseCheck(row+2, col+1); // Bottom right
-    horseCheck(row+1, col-2); // Left up
-    horseCheck(row-1, col-2); // Left down
-    horseCheck(row+1, col+2); // Right up
-    horseCheck(row-1, col+2); // Right down
+    knightCheck(row-2, col-1); // Up left
+    knightCheck(row-2, col+1); // Up right
+    knightCheck(row+2, col-1); // Bottom left
+    knightCheck(row+2, col+1); // Bottom right
+    knightCheck(row+1, col-2); // Left up
+    knightCheck(row-1, col-2); // Left down
+    knightCheck(row+1, col+2); // Right up
+    knightCheck(row-1, col+2); // Right down
 
     return arrMoves;
 }
@@ -906,7 +906,7 @@ function performAITurn(aiColor) {
     const aiMoveValue = {};
     aiMoveValue[EMPTY_CELL] = 0;
     aiMoveValue[PieceTypeEnum.Pawn] = 1;
-    aiMoveValue[PieceTypeEnum.Horse] = 2;
+    aiMoveValue[PieceTypeEnum.Knight] = 2;
     aiMoveValue[PieceTypeEnum.Bishop] = 3;
     aiMoveValue[PieceTypeEnum.Rook] = 4;
     aiMoveValue[PieceTypeEnum.Queen] = 5;
