@@ -82,6 +82,7 @@ let messageWarningElem;
 let checkboxAIEnabledElem;
 
 let gameState;
+let aiColor = PlayerEnum.Black;
 let activePlayer;
 let chessboard;
 let selectedPiece = {
@@ -131,6 +132,10 @@ function initGame(chessboardMatrix) {
 function resetSelectedPiece() {
     selectedPiece.row = -1;
     selectedPiece.col = -1;
+}
+
+function isAITurn() {
+    return aiOpponent && activePlayer === aiColor;
 }
 
 function createChessboardTableHTML(numRows, numCols) {
@@ -200,10 +205,8 @@ function handleCellSelected(row, col) {
     if(gameState === GameStateEnum.SelectPiece) {
         if(pieceAt(row, col) !== EMPTY_CELL) {
             if(pieceAt(row, col).owner === activePlayer) {
-                // Don't use these functions during AI turn
-                if(!(aiOpponent && activePlayer === PlayerEnum.Black)) {
                     console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
-
+                if(!isAITurn()) {
                     let arrPossibleMoves = getPossibleMovesForPiece(row, col);
                     setSelectionMarkerActive(row, col, true);
                     setDisplayDestinationActive(arrPossibleMoves, true);
@@ -226,8 +229,7 @@ function handleCellSelected(row, col) {
         
         let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col);
 
-        // Don't use these functions during AI turn
-        if(!(aiOpponent && activePlayer === PlayerEnum.Black)) {
+        if(!isAITurn()) {
             setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
             setDisplayDestinationActive(arrPossibleMoves, false);
         }
@@ -326,14 +328,13 @@ function changeTurn() {
 
     if(activePlayer === PlayerEnum.White) {
         activePlayer = PlayerEnum.Black;
-        if(aiOpponent) {
-            performAITurn(activePlayer);
-        }
     } else {
         activePlayer = PlayerEnum.White;
     }
 
     setPlayerTurnText();
+    if(isAITurn())
+        performAITurn(activePlayer);
 }
 
 function setPlayerTurnText() {
