@@ -211,8 +211,8 @@ function handleCellSelected(row, col) {
     if(gameState === GameStateEnum.SelectPiece) {
         if(pieceAt(row, col) !== EMPTY_CELL) {
             if(pieceAt(row, col).owner === activePlayer) {
-                    console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
                 if(!isAITurn()) {
+                    //console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
                     let arrPossibleMoves = getPossibleMovesForPiece(row, col);
                     setSelectionMarkerActive(row, col, true);
                     setDisplayDestinationActive(arrPossibleMoves, true);
@@ -224,12 +224,12 @@ function handleCellSelected(row, col) {
             }
         }
         else {
-            console.log(`Cell ${row}-${col}. Empty`);
+            //console.log(`Clicked on cell ${row}-${col}. Empty`);
         }
     } else if(gameState === GameStateEnum.SelectDestination) {
         // If user clicks again on the piece they're trying to move, do nothing
         if(row === selectedPiece.row && col === selectedPiece.col) {
-            console.log("You have already selected this piece.")
+            //console.log("You have already selected this piece.")
             return;
         }
         
