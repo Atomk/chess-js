@@ -96,17 +96,23 @@ document.body.onload = function() {
     // Must be called before everything else because it initializes the chessboard
     initGame();
 
-    let table = createChessboardTableHTML(MAX_ROW+1, MAX_COL+1);
-    document.getElementById("grid-container").appendChild(table);
+    initUI();
 
     messageTurnElem = document.getElementById("msg-turn");
     messageWarningElem = document.getElementById("msg-warning");
-    setPlayerTurnText();
 
     checkboxAIEnabledElem = document.getElementById("checkbox-ai-enabled");
     checkboxAIEnabledElem.onclick = () => {
         aiOpponent = checkboxAIEnabledElem.checked;
     };
+
+function initUI() {
+    let numRows = chessboard.length;
+    let numCols = chessboard[0].length;
+    let table = createChessboardTableHTML(numRows, numCols);
+    document.getElementById("grid-container").appendChild(table);
+
+    setPlayerTurnText();
 }
 
 /**
