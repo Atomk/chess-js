@@ -23,21 +23,22 @@ Object.freeze(PieceTypeEnum);
 Object.freeze(PlayerEnum);
 Object.freeze(GameStateEnum);
 
-const htmlPiecesUnicodeWhite = {};
-htmlPiecesUnicodeWhite[PieceTypeEnum.Pawn] = "♙";
-htmlPiecesUnicodeWhite[PieceTypeEnum.Knight] = "♘";
-htmlPiecesUnicodeWhite[PieceTypeEnum.Bishop] = "♗‍";
-htmlPiecesUnicodeWhite[PieceTypeEnum.Rook] = "♖";
-htmlPiecesUnicodeWhite[PieceTypeEnum.King] = "♔";
-htmlPiecesUnicodeWhite[PieceTypeEnum.Queen] = "♕";
-
-const htmlPiecesUnicodeBlack = {};
-htmlPiecesUnicodeBlack[PieceTypeEnum.Pawn] = "♟";
-htmlPiecesUnicodeBlack[PieceTypeEnum.Knight] = "♞";
-htmlPiecesUnicodeBlack[PieceTypeEnum.Bishop] = "♝";
-htmlPiecesUnicodeBlack[PieceTypeEnum.Rook] = "♜";
-htmlPiecesUnicodeBlack[PieceTypeEnum.King] = "♚";
-htmlPiecesUnicodeBlack[PieceTypeEnum.Queen] = "♛";
+const piecesUnicode = {};
+piecesUnicode[PlayerEnum.White] = {};
+piecesUnicode[PlayerEnum.White][PieceTypeEnum.Pawn] = "♙";
+piecesUnicode[PlayerEnum.White][PieceTypeEnum.Knight] = "♘";
+piecesUnicode[PlayerEnum.White][PieceTypeEnum.Bishop] = "♗";
+piecesUnicode[PlayerEnum.White][PieceTypeEnum.Rook] = "♖";
+piecesUnicode[PlayerEnum.White][PieceTypeEnum.King] = "♔";
+piecesUnicode[PlayerEnum.White][PieceTypeEnum.Queen] = "♕";
+piecesUnicode[PlayerEnum.Black] = {};
+piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Pawn] = "♟";
+piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Knight] = "♞";
+piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Bishop] = "♝";
+piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Rook] = "♜";
+piecesUnicode[PlayerEnum.Black][PieceTypeEnum.King] = "♚";
+piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Queen] = "♛";
+Object.freeze(piecesUnicode);
 
 const EMPTY_CELL = "";
 
@@ -220,10 +221,7 @@ function createChessboardTableHTML(numRows, numCols) {
             if(piece !== EMPTY_CELL) {
                 
                 let span = document.createElement("span");
-                if(piece.owner === PlayerEnum.White)
-                    span.innerText = htmlPiecesUnicodeWhite[piece.type];
-                else
-                span.innerText = htmlPiecesUnicodeBlack[piece.type];
+                span.innerText = piecesUnicode[piece.owner][piece.type];
 
                 if(piece.owner === PlayerEnum.White) {
                     span.className = "piece-white";
@@ -322,10 +320,7 @@ function handleCellSelected(row, col) {
                     // TODO allow choosing what piece to promote to
                     chessboard[row][col] = `${promotionType}${piece.owner}`;
                     // Visually replaces the pawn with the new piece
-                    if(piece.owner === PlayerEnum.White)
-                        getHTMLCellByCoords(row, col).firstChild.innerText = htmlPiecesUnicodeWhite[promotionType];
-                    else
-                        getHTMLCellByCoords(row, col).firstChild.innerText = htmlPiecesUnicodeBlack[promotionType];
+                    getHTMLCellByCoords(row, col).firstChild.innerText = piecesUnicode[piece.owner][promotionType];
                 }
             }
 
