@@ -12,6 +12,7 @@ The icons used for the pieces are just [Unicode characters](https://en.wikipedia
 ## Features
 - Basic AI
 - Basic pawn promotion (always promoted to queens)
+- Support for some chess variants (6x6, 5x5)
 
 ## To-do
 - Button to restart game

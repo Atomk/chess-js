@@ -31,14 +31,38 @@
         </svg>
     </a>
 
-    <div id="grid-container" class="noselect"></div>
-    <div id="messages-container">
+    <form id="options" class="center-block">
+        <div>
+            <h2>Opponent</h2>
+            <input type="radio" id="opponent-choice-human" name="options-opponent">
+            <!-- 🤼🧠👤👥 -->
+            <label for="opponent-choice-human">👤 Human</label><br>
+            <input type="radio" id="opponent-choice-ai" name="options-opponent" checked>
+            <label for="opponent-choice-ai">💻 Computer</label>
+        </div>
+        <div id="menu-section-color">
+            <h2>Your color</h2>
+            <input type="radio" id="color-choice-white" name="options-color" checked>
+            <label for="color-choice-white">⚪ White</label><br>
+            <input type="radio" id="color-choice-black" name="options-color">
+            <label for="color-choice-black">⚫ Black</label>
+        </div>
+        <div>
+            <h2 class="relative">Chessboard <a href="https://en.wikipedia.org/wiki/Minichess" target="_blank" class="title-info">More info</a></h2>
+            <input type="radio" id="chessboard-standard" name="options-chessboard" checked>
+            <label for="chessboard-standard">8x8 standard</label><br>
+            <input type="radio" id="chessboard-6x6NoKnights" name="options-chessboard">
+            <label for="chessboard-6x6NoKnights">6x6 no knights</label><br>
+            <input type="radio" id="chessboard-5x5babychess" name="options-chessboard">
+            <label for="chessboard-5x5babychess">5x5 "baby chess"</label>
+        </div>
+        <button type="submit">Start</button>
+    </form>
+
+    <div id="grid-container" class="noselect hidden"></div>
+    <div id="messages-container" class="hidden">
         <p id="msg-turn" class="message"></p>
         <p id="msg-warning" class="message"></p>
-    </div>
-    <div id="options">
-        <input id="checkbox-ai-enabled" type="checkbox" checked>
-        <label for="checkbox-ai-enabled">Enable AI</label>
     </div>
 
     <script src="chess.js"></script>

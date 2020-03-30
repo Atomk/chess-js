@@ -7,6 +7,62 @@ h1 {
     text-align: center;
 }
 
+.hidden {
+    display: none;
+}
+
+#options {
+    margin: 0 auto;
+    background-color: #ddd;
+    border-radius: 10px;
+    padding: 24px 30px;
+    max-width: 250px;
+}
+#options h2 {
+    margin-top: 30px;
+    margin-bottom: 14px;
+}
+/* The h2 in the first child (div) in #options */
+#options > div:first-child > h2 {
+    margin-top: 0;
+}
+.relative {
+    position: relative;
+}
+/* Used for the "more info" link in chessboard options */
+.title-info {
+    font-size: 12px;
+    color: #777;
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+}
+
+#options button {
+    cursor: pointer;
+    display: block;
+    margin: 26px auto 0 auto;
+    padding: 8px 14px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    transition: background-color .15s;
+}
+#options button:hover {
+    background-color: #3b3b3b;
+}
+#options button:active {
+    background-color: #2a2a2a;
+}
+
+/* Apply style to a label related to a disabled input
+* https://stackoverflow.com/a/19363036 */
+input:disabled+label {
+    opacity: 0.5;
+}
+
 #messages-container {
     margin: 20px 0;
 }
@@ -20,11 +76,6 @@ h1 {
     text-align: center;
 }
 
-#options {
-    font-family: monospace;
-    font-size: 1.2em;
-    text-align: center;
-}
 
 table {
     margin: 0 auto;

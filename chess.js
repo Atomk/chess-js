@@ -79,10 +79,9 @@ let MAX_ROW;
 
 let messageTurnElem;
 let messageWarningElem;
-let checkboxAIEnabledElem;
 
 let gameState;
-let aiColor = PlayerEnum.Black;
+let aiColor;
 let activePlayer;
 let chessboard;
 let selectedPiece = {
@@ -90,21 +89,74 @@ let selectedPiece = {
     col: -1
 };
 
-let aiOpponent = true;
+let aiOpponent;
 
 document.body.onload = function() {
-    // Must be called before everything else because it initializes the chessboard
-    initGame();
-
-    initUI();
-
     messageTurnElem = document.getElementById("msg-turn");
     messageWarningElem = document.getElementById("msg-warning");
-
-    checkboxAIEnabledElem = document.getElementById("checkbox-ai-enabled");
-    checkboxAIEnabledElem.onclick = () => {
-        aiOpponent = checkboxAIEnabledElem.checked;
+    
+    document.getElementById("opponent-choice-human").onclick = () => {
+        document.getElementById("menu-section-color").classList.add("hidden");
     };
+    document.getElementById("opponent-choice-ai").onclick = () => {
+        document.getElementById("menu-section-color").classList.remove("hidden");
+    };
+
+    let form = document.querySelector("form");
+    form.onsubmit = (event) => {
+        event.preventDefault();
+        form.classList.add("hidden");
+
+        document.getElementById("grid-container").classList.remove("hidden");
+        document.getElementById("messages-container").classList.remove("hidden");
+
+        let choiceColor, choiceAI, choiceChessboard;
+        // https://stackoverflow.com/a/26236365
+        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
+        for(const input of form.elements) {
+            if(input.type == "radio" && input.checked) {
+                switch(input.name) {
+                    case "options-opponent":
+                        switch(input.id) {
+                            case "opponent-choice-human": choiceAI = false; break;
+                            case "opponent-choice-ai": choiceAI = true; break;
+                            default: console.error(`Option ${input.id} not recognized.`); break;
+                        }
+                        break;
+                    case "options-color":
+                        switch(input.id) {
+                            case "color-choice-white": choiceColor = PlayerEnum.White; break;
+                            case "color-choice-black": choiceColor = PlayerEnum.Black; break;
+                            default: console.error(`Option ${input.id} not recognized.`); break;
+                        }
+                        break;
+                    case "options-chessboard":
+                        switch(input.id) {
+                            case "chessboard-standard": choiceChessboard = chessboardsList._8x8Standard; break;
+                            case "chessboard-6x6NoKnights": choiceChessboard = chessboardsList._6x6SimplerNoKnights; break;
+                            case "chessboard-5x5babychess": choiceChessboard = chessboardsList._5x5BabyChess; break;
+                            default: console.error(`Option ${input.id} not recognized.`); break;
+                        }
+                        break;
+                    default:
+                        console.error(`Option ${input.name} not recognized.`);
+                        break;
+                }
+            }
+        }
+
+        // If AI is disabled, ignore color options
+        if(choiceAI === false) {
+            choiceColor = PlayerEnum.White;
+        }
+
+        initGame(choiceColor, choiceAI, choiceChessboard);
+        initUI();
+
+        if(isAITurn())
+            performAITurn(activePlayer);
+    }
+}
 
 function initUI() {
     let numRows = chessboard.length;
@@ -119,7 +171,7 @@ function initUI() {
  * Resets game variables to their initial state.
  * @param {*} [chessboardMatrix] The chessboard configuration to use. If not passed, a default 8x8 chessboard will be used.
  */
-function initGame(chessboardMatrix) {
+function initGame(humanPlayerColor, aiEnabled, chessboardMatrix) {
     if(chessboardMatrix)
         chessboard = chessboardMatrix;
     else
@@ -130,6 +182,10 @@ function initGame(chessboardMatrix) {
     MAX_ROW = numRows - 1;
     MAX_COL = numCols - 1;
 
+    aiOpponent = aiEnabled;
+    aiColor = getEnemy(humanPlayerColor);
+    
+    // White is always the first to move
     activePlayer = PlayerEnum.White;
     gameState = GameStateEnum.SelectPiece;
     resetSelectedPiece();
