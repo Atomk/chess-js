@@ -112,7 +112,7 @@ function initUI() {
     let table = createChessboardTableHTML(numRows, numCols);
     document.getElementById("grid-container").appendChild(table);
 
-    setPlayerTurnText();
+    setPlayerTurnText(activePlayer);
 }
 
 /**
@@ -332,15 +332,15 @@ function setSelectionMarkerActive(row, col, display) {
 function changeTurn() {
     gameState = GameStateEnum.SelectPiece;
     activePlayer = getEnemy(activePlayer);
+    setPlayerTurnText(activePlayer);
 
-
-    setPlayerTurnText();
     if(isAITurn())
         performAITurn(activePlayer);
 }
 
-function setPlayerTurnText() {
-    if(activePlayer === PlayerEnum.White)
+/** Shows a message saying which player should move. */
+function setPlayerTurnText(player) {
+    if(player === PlayerEnum.White)
         messageTurnElem.innerText = "⚪ White's turn ⚪";
     else
         messageTurnElem.innerText = "⚫ Black's turn ⚫";
