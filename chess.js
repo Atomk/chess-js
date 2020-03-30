@@ -325,12 +325,8 @@ function setSelectionMarkerActive(row, col, display) {
 
 function changeTurn() {
     gameState = GameStateEnum.SelectPiece;
+    activePlayer = getEnemy(activePlayer);
 
-    if(activePlayer === PlayerEnum.White) {
-        activePlayer = PlayerEnum.Black;
-    } else {
-        activePlayer = PlayerEnum.White;
-    }
 
     setPlayerTurnText();
     if(isAITurn())
