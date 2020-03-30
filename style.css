@@ -11,6 +11,26 @@ h1 {
     display: none;
 }
 
+/* Disables text selection, used to avoid highlighting
+the pieces by mistake, since they're basically text
+https://stackoverflow.com/a/4407335 */
+.noselect {
+    cursor: default;
+    -webkit-touch-callout: none;    /* iOS Safari */
+    -webkit-user-select: none;      /* Safari */
+    -khtml-user-select: none;       /* Konqueror HTML */
+    -moz-user-select: none;         /* Old versions of Firefox */
+    -ms-user-select: none;          /* Internet Explorer/Edge */
+    user-select: none;              /* Non-prefixed version, currently
+                                    supported by Chrome, Opera and Firefox */
+}
+
+
+/************************
+*******  OPTIONS  *******
+*************************/
+
+
 #options {
     margin: 0 auto;
     background-color: #ddd;
@@ -63,6 +83,12 @@ input:disabled+label {
     opacity: 0.5;
 }
 
+
+/*************************
+******  GAME TEXTS  ******
+**************************/
+
+
 #messages-container {
     margin: 20px 0;
 }
@@ -77,6 +103,11 @@ input:disabled+label {
 }
 
 
+/*************************
+******  CHESSBOARD  ******
+**************************/
+
+
 table {
     margin: 0 auto;
     border: 1px solid #555;
@@ -88,20 +119,6 @@ td {
     height: 40px;
     text-align: center;
     vertical-align: middle;
-}
-
-/* Disables text selection, used to avoid highlighting
-the pieces by mistake, since they're basically text
-https://stackoverflow.com/a/4407335 */
-.noselect {
-    cursor: default;
-    -webkit-touch-callout: none;    /* iOS Safari */
-    -webkit-user-select: none;      /* Safari */
-    -khtml-user-select: none;       /* Konqueror HTML */
-    -moz-user-select: none;         /* Old versions of Firefox */
-    -ms-user-select: none;          /* Internet Explorer/Edge */
-    user-select: none;              /* Non-prefixed version, currently
-                                    supported by Chrome, Opera and Firefox */
 }
 
 .piece-white,
