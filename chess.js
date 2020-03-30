@@ -270,9 +270,14 @@ function handleCellSelected(row, col) {
             
             if(hasLegalMoves(enemyPlayer)) {
                 if(enemyKingInCheck) {
-                    messageWarningElem.innerText = (activePlayer === PlayerEnum.White)
-                        ? "⚠ Black king check! ⚠"
-                        : "⚠ White king check! ⚠";
+                    // The "⚠" emoji defaults to text on some browsers
+                    // (i.e. Chrome on Windows 10), unless followed by U+FE0F
+                    // which forces it to be displayed as emoji
+                    // https://emojipedia.org/emoji/%E2%9A%A0/
+                    // https://emojipedia.org/variation-selector-16/
+                    messageWarningElem.innerHTML = (activePlayer === PlayerEnum.White)
+                        ? "⚠&#xFE0F; Black king check! ⚠&#xFE0F;"
+                        : "⚠&#xFE0F; White king check! ⚠&#xFE0F;";
                 } else {
                     messageWarningElem.innerText = "";
                 }
