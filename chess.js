@@ -78,6 +78,14 @@ const chessboardsList = {
 };
 Object.freeze(chessboardsList);
 
+class Chess {
+    constructor() {
+        this.MIN_ROWS = 2;
+        this.MIN_COLS = 2;
+    }
+
+}
+
 // I made these because sometimes I forget to check array indexes
 // against "GRID_SIZE-1" instead of just "GRID_SIZE"
 // There are two different variables because in the future
