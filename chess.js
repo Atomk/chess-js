@@ -110,61 +110,64 @@ document.body.onload = function() {
         document.getElementById("menu-section-color").classList.remove("hidden");
     };
 
-    let form = document.querySelector("form");
-    form.onsubmit = (event) => {
-        event.preventDefault();
-        form.classList.add("hidden");
+    document.querySelector("form").onsubmit = handleMenuFormSubmit;
+}
 
-        document.getElementById("grid-container").classList.remove("hidden");
-        document.getElementById("messages-container").classList.remove("hidden");
+function handleMenuFormSubmit(event) {
+    event.preventDefault();
 
-        let choiceColor, choiceAI, choiceChessboard;
-        // https://stackoverflow.com/a/26236365
-        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
-        for(const input of form.elements) {
-            if(input.type == "radio" && input.checked) {
-                switch(input.name) {
-                    case "options-opponent":
-                        switch(input.id) {
-                            case "opponent-choice-human": choiceAI = false; break;
-                            case "opponent-choice-ai": choiceAI = true; break;
-                            default: console.error(`Option ${input.id} not recognized.`); break;
-                        }
-                        break;
-                    case "options-color":
-                        switch(input.id) {
-                            case "color-choice-white": choiceColor = PlayerEnum.White; break;
-                            case "color-choice-black": choiceColor = PlayerEnum.Black; break;
-                            default: console.error(`Option ${input.id} not recognized.`); break;
-                        }
-                        break;
-                    case "options-chessboard":
-                        switch(input.id) {
-                            case "chessboard-standard": choiceChessboard = chessboardsList._8x8Standard; break;
-                            case "chessboard-6x6NoKnights": choiceChessboard = chessboardsList._6x6SimplerNoKnights; break;
-                            case "chessboard-5x5babychess": choiceChessboard = chessboardsList._5x5BabyChess; break;
-                            case "chessboard-4x5Silverman": choiceChessboard = chessboardsList._4x5Silverman; break;
-                            default: console.error(`Option ${input.id} not recognized.`); break;
-                        }
-                        break;
-                    default:
-                        console.error(`Option ${input.name} not recognized.`);
-                        break;
-                }
+    let form = event.currentTarget;
+    form.classList.add("hidden");
+
+    document.getElementById("grid-container").classList.remove("hidden");
+    document.getElementById("messages-container").classList.remove("hidden");
+
+    let choiceColor, choiceAI, choiceChessboard;
+    // https://stackoverflow.com/a/26236365
+    // https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
+    for(const input of form.elements) {
+        if(input.type == "radio" && input.checked) {
+            switch(input.name) {
+                case "options-opponent":
+                    switch(input.id) {
+                        case "opponent-choice-human": choiceAI = false; break;
+                        case "opponent-choice-ai": choiceAI = true; break;
+                        default: console.error(`Option ${input.id} not recognized.`); break;
+                    }
+                    break;
+                case "options-color":
+                    switch(input.id) {
+                        case "color-choice-white": choiceColor = PlayerEnum.White; break;
+                        case "color-choice-black": choiceColor = PlayerEnum.Black; break;
+                        default: console.error(`Option ${input.id} not recognized.`); break;
+                    }
+                    break;
+                case "options-chessboard":
+                    switch(input.id) {
+                        case "chessboard-standard": choiceChessboard = chessboardsList._8x8Standard; break;
+                        case "chessboard-6x6NoKnights": choiceChessboard = chessboardsList._6x6SimplerNoKnights; break;
+                        case "chessboard-5x5babychess": choiceChessboard = chessboardsList._5x5BabyChess; break;
+                        case "chessboard-4x5Silverman": choiceChessboard = chessboardsList._4x5Silverman; break;
+                        default: console.error(`Option ${input.id} not recognized.`); break;
+                    }
+                    break;
+                default:
+                    console.error(`Option ${input.name} not recognized.`);
+                    break;
             }
         }
-
-        // If AI is disabled, ignore color options
-        if(choiceAI === false) {
-            choiceColor = PlayerEnum.White;
-        }
-
-        initGame(choiceColor, choiceAI, choiceChessboard);
-        initUI();
-
-        if(isAITurn())
-            performAITurn(activePlayer);
     }
+
+    // If AI is disabled, ignore color options
+    if(choiceAI === false) {
+        choiceColor = PlayerEnum.White;
+    }
+
+    initGame(choiceColor, choiceAI, choiceChessboard);
+    initUI();
+
+    if(isAITurn())
+        performAITurn(activePlayer);
 }
 
 function initUI() {
