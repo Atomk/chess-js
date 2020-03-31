@@ -67,6 +67,13 @@ const chessboardsList = {
         ["", "", "", "", ""],
         ["p1", "p1", "p1", "p1", "p1"],
         ["r1", "h1", "b1", "q1", "k1"]
+    ],
+    _4x5Silverman: [
+        ["r2", "q2", "k2", "r2"],
+        ["p2", "p2", "p2", "p2"],
+        ["", "", "", ""],
+        ["p1", "p1", "p1", "p1"],
+        ["r1", "q1", "k1", "r1"]
     ]
 };
 Object.freeze(chessboardsList);
@@ -136,6 +143,7 @@ document.body.onload = function() {
                             case "chessboard-standard": choiceChessboard = chessboardsList._8x8Standard; break;
                             case "chessboard-6x6NoKnights": choiceChessboard = chessboardsList._6x6SimplerNoKnights; break;
                             case "chessboard-5x5babychess": choiceChessboard = chessboardsList._5x5BabyChess; break;
+                            case "chessboard-4x5Silverman": choiceChessboard = chessboardsList._4x5Silverman; break;
                             default: console.error(`Option ${input.id} not recognized.`); break;
                         }
                         break;
