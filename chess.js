@@ -143,13 +143,10 @@ let MAX_ROW;
 let messageTurnElem;
 let messageWarningElem;
 
-let aiColor;
 let selectedPiece = {
     row: -1,
     col: -1
 };
-
-let aiOpponent;
 
 let chess = new Chess();
 
