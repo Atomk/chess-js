@@ -46,25 +46,25 @@ const chessboardsList = {
     _8x8Standard: [
         ["r2", "h2", "b2", "q2", "k2", "b2", "h2", "r2"],
         ["p2", "p2", "p2", "p2", "p2", "p2", "p2", "p2"],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
         ["p1", "p1", "p1", "p1", "p1", "p1", "p1", "p1"],
         ["r1", "h1", "b1", "q1", "k1", "b1", "h1", "r1"]
     ],
     _6x6SimplerNoKnights: [
         ["r2", "b2", "q2", "k2", "b2", "r2"],
         ["p2", "p2", "p2", "p2", "p2", "p2"],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""],
         ["p1", "p1", "p1", "p1", "p1", "p1"],
         ["r1", "b1", "q1", "k1", "b1", "r1"]
     ],
     _5x5BabyChess: [
         ["k2", "q2", "b2", "h2", "r2"],
         ["p2", "p2", "p2", "p2", "p2"],
-        [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
+        ["", "", "", "", ""],
         ["p1", "p1", "p1", "p1", "p1"],
         ["r1", "h1", "b1", "q1", "k1"]
     ]
