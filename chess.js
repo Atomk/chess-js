@@ -84,6 +84,32 @@ class Chess {
         this.MIN_COLS = 2;
     }
 
+    /**
+     * Sets game variables to their initial state.
+     * @param {*} chessboard The chessboard configuration to use.
+     * @param {*} aiEnabled Determines if the opponent will be controlled by AI.
+     * @param {*} chessboard Determines which pieces are controlled by AI.
+     */
+    startGame(chessboard, aiEnabled, aiColor) {
+        this.chessboard = chessboard;
+        this.numRows = chessboard.length;
+        this.numCols = chessboard[0].length;
+        this.MAX_ROW = this.numRows - 1;
+        this.MAX_COL = this.numCols - 1;
+
+        this.aiEnabled = aiEnabled;
+        this.aiColor = aiColor;
+        // White is always the first to move
+        this.activePlayer = PlayerEnum.White;
+        this.gameState = GameStateEnum.SelectPiece;
+        this.selectedPiece = { row: -1, col: -1 };
+    }
+
+    /** Returns true if the row and column indexes passed as arguments
+     * are in-bounds in the chessboard matrix. */
+    inBounds(row, col) {
+        return (row >= 0 && row <= this.MAX_ROW && col >= 0 && col <= this.MAX_COL);
+    }
 }
 
 // I made these because sometimes I forget to check array indexes
@@ -99,13 +125,14 @@ let messageWarningElem;
 let gameState;
 let aiColor;
 let activePlayer;
-let chessboard;
 let selectedPiece = {
     row: -1,
     col: -1
 };
 
 let aiOpponent;
+
+let chess = new Chess();
 
 document.body.onload = function() {
     messageTurnElem = document.getElementById("msg-turn");
@@ -171,7 +198,7 @@ function handleMenuFormSubmit(event) {
         choiceColor = PlayerEnum.White;
     }
 
-    initGame(choiceColor, choiceAI, choiceChessboard);
+    chess.startGame(choiceChessboard, choiceAI, choiceColor);
     initUI();
 
     if(isAITurn())
@@ -179,41 +206,11 @@ function handleMenuFormSubmit(event) {
 }
 
 function initUI() {
-    let numRows = chessboard.length;
-    let numCols = chessboard[0].length;
-    let table = createChessboardTableHTML(numRows, numCols);
+    // TODO: chessboard.numRows
+    let table = createChessboardTableHTML(chess.numRows, chess.numCols);
     document.getElementById("grid-container").appendChild(table);
 
     setPlayerTurnText(activePlayer);
-}
-
-/**
- * Resets game variables to their initial state.
- * @param {*} [chessboardMatrix] The chessboard configuration to use. If not passed, a default 8x8 chessboard will be used.
- */
-function initGame(humanPlayerColor, aiEnabled, chessboardMatrix) {
-    if(chessboardMatrix)
-        chessboard = chessboardMatrix;
-    else
-        chessboard = chessboardsList._8x8Standard;
-
-    let numRows = chessboard.length;
-    let numCols = chessboard[0].length;
-    MAX_ROW = numRows - 1;
-    MAX_COL = numCols - 1;
-
-    aiOpponent = aiEnabled;
-    aiColor = getEnemy(humanPlayerColor);
-    
-    // White is always the first to move
-    activePlayer = PlayerEnum.White;
-    gameState = GameStateEnum.SelectPiece;
-    resetSelectedPiece();
-}
-
-function resetSelectedPiece() {
-    selectedPiece.row = -1;
-    selectedPiece.col = -1;
 }
 
 function isAITurn() {
@@ -323,8 +320,8 @@ function handleCellSelected(row, col) {
         }
 
         if(isValidMove) {
-            chessboard[row][col] = chessboard[selectedPiece.row][selectedPiece.col];
-            chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_CELL;
+            chess.chessboard[row][col] = chess.chessboard[selectedPiece.row][selectedPiece.col];
+            chess.chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_CELL;
 
             let selectedPieceHTMLCell = getHTMLCellByCoords(selectedPiece.row, selectedPiece.col)
             getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
@@ -337,7 +334,7 @@ function handleCellSelected(row, col) {
                 if(promotionWhite || promotionBlack) {
                     let promotionType = PieceTypeEnum.Queen;
                     // TODO allow choosing what piece to promote to
-                    chessboard[row][col] = `${promotionType}${piece.owner}`;
+                    chess.chessboard[row][col] = `${promotionType}${piece.owner}`;
                     // Visually replaces the pawn with the new piece
                     getHTMLCellByCoords(row, col).firstChild.innerText = piecesUnicode[piece.owner][promotionType];
                 }
@@ -387,7 +384,7 @@ function handleCellSelected(row, col) {
 }
 
 function setSelectionMarkerActive(row, col, display) {
-    if(!inBounds(row, col)) {
+    if(!chess.inBounds(row, col)) {
         console.error("Invalid arguments.");
         return;
     }
@@ -462,7 +459,7 @@ class PossibleMove {
  * @param {boolean} checkLegal Determines whether to check if moves are valid. Prevents the function from calling itselt infinitely when performing the validation check.
  */
 function getPossibleMovesForPiece(row, col, checkLegal = true) {
-    if(!inBounds(row, col))
+    if(!chess.inBounds(row, col))
     {
         console.error("Invalid row or column value");
         return undefined;
@@ -511,7 +508,7 @@ function getPawnMoves(row, col) {
     r = row + (1 * direction);
 
     // If pawn can go one step forward
-    if(inBounds(r, col)) {
+    if(chess.inBounds(r, col)) {
         // If cell forward-left has enemy
         if(col > 0) {
             targetCell = pieceAt(r, col-1);
@@ -553,7 +550,7 @@ function getKnightMoves(row, col) {
     let target;
 
     function knightCheck(r, c) {
-        if(inBounds(r, c)) {
+        if(chess.inBounds(r, c)) {
             target = pieceAt(r, c);
             if(target === EMPTY_CELL) {
                 arrMoves.push(new PossibleMove(r, c, false));
@@ -583,7 +580,7 @@ function getBishopMoves(row, col) {
     // Up-left
     r = row-1;
     c = col-1;
-    while(inBounds(r, c)) {
+    while(chess.inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -598,7 +595,7 @@ function getBishopMoves(row, col) {
     // Up-right
     r = row-1;
     c = col+1;
-    while(inBounds(r, c)) {
+    while(chess.inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -612,7 +609,7 @@ function getBishopMoves(row, col) {
     // Bottom-left
     r = row+1;
     c = col-1;
-    while(inBounds(r, c)) {
+    while(chess.inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -626,7 +623,7 @@ function getBishopMoves(row, col) {
     // Bottom-right
     r = row+1;
     c = col+1;
-    while(inBounds(r, c)) {
+    while(chess.inBounds(r, c)) {
         if(pieceAt(r, c) === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(r, c, false));
         } else {
@@ -650,11 +647,11 @@ function getRookMoves(row, col) {
     r = row+1;
     while(r <= MAX_ROW) {
         // If cell is empty
-        if(chessboard[r][col] === EMPTY_CELL) {
+        if(chess.chessboard[r][col] === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(r, col, false));
         } else {
             // If cell contains an enemy unit
-            if(chessboard[r][col][1] !== pieceToMove.owner) {
+            if(chess.chessboard[r][col][1] !== pieceToMove.owner) {
                 arrMoves.push(new PossibleMove(r, col, true));
             }
             // In any case this cell is not empty, so the rook
@@ -667,10 +664,10 @@ function getRookMoves(row, col) {
     // Top
     r = row-1;
     while(r >= 0) {
-        if(chessboard[r][col] === EMPTY_CELL) {
+        if(chess.chessboard[r][col] === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(r, col, false));
         } else {
-            if(chessboard[r][col][1] !== pieceToMove.owner) {
+            if(chess.chessboard[r][col][1] !== pieceToMove.owner) {
                 arrMoves.push(new PossibleMove(r, col, true));
             }
             break;
@@ -681,10 +678,10 @@ function getRookMoves(row, col) {
     // Right
     c = col+1;
     while(c <= MAX_COL) {
-        if(chessboard[row][c] === EMPTY_CELL) {
+        if(chess.chessboard[row][c] === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(row, c, false));
         } else {
-            if(chessboard[row][c][1] !== pieceToMove.owner) {
+            if(chess.chessboard[row][c][1] !== pieceToMove.owner) {
                 arrMoves.push(new PossibleMove(row, c, true));
             }
             break;
@@ -695,10 +692,10 @@ function getRookMoves(row, col) {
     // Left
     c = col-1;
     while(c >= 0) {
-        if(chessboard[row][c] === EMPTY_CELL) {
+        if(chess.chessboard[row][c] === EMPTY_CELL) {
             arrMoves.push(new PossibleMove(row, c, false));
         } else {
-            if(chessboard[row][c][1] !== pieceToMove.owner) {
+            if(chess.chessboard[row][c][1] !== pieceToMove.owner) {
                 arrMoves.push(new PossibleMove(row, c, true));
             }
             break;
@@ -801,18 +798,18 @@ function getKingMoves(row, col) {
 
 /** Returns whether moving a piece on a certain square puts its king in check. */
 function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
-    let pieceOwner = chessboard[pieceRow][pieceCol][1];
-    let destinationCellContents = chessboard[destRow][destCol];
+    let pieceOwner = chess.chessboard[pieceRow][pieceCol][1];
+    let destinationCellContents = chess.chessboard[destRow][destCol];
     // Move piece on destination square
-    chessboard[destRow][destCol] = chessboard[pieceRow][pieceCol];
-    chessboard[pieceRow][pieceCol] = EMPTY_CELL;
+    chess.chessboard[destRow][destCol] = chess.chessboard[pieceRow][pieceCol];
+    chess.chessboard[pieceRow][pieceCol] = EMPTY_CELL;
 
     let kingInCheck = isKingInCheck(pieceOwner);
 
     // This function uses the original chessboard to avoid creating
     // a copy of the chessboard matrix on every call
-    chessboard[pieceRow][pieceCol] = chessboard[destRow][destCol];
-    chessboard[destRow][destCol] = destinationCellContents;
+    chess.chessboard[pieceRow][pieceCol] = chess.chessboard[destRow][destCol];
+    chess.chessboard[destRow][destCol] = destinationCellContents;
 
     return kingInCheck;
 }
@@ -820,25 +817,19 @@ function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
 /** Returns whether moving a piece puts a square in danger. */
 function doesMoveMakeSquareCapturable(pieceRow, pieceCol, destRow, destCol, squareRow, squareCol) {
     let enemyPlayer = getEnemy(pieceAt(pieceRow, pieceCol).owner);
-    let destinationCellContents = chessboard[destRow][destCol];
+    let destinationCellContents = chess.chessboard[destRow][destCol];
     // Move piece on destination square
-    chessboard[destRow][destCol] = chessboard[pieceRow][pieceCol];
-    chessboard[pieceRow][pieceCol] = EMPTY_CELL;
+    chess.chessboard[destRow][destCol] = chess.chessboard[pieceRow][pieceCol];
+    chess.chessboard[pieceRow][pieceCol] = EMPTY_CELL;
 
     let result = canSquareBeCaptured(squareRow, squareCol, enemyPlayer);
 
     // This function uses the original chessboard to avoid creating
     // a copy of the chessboard matrix on every call
-    chessboard[pieceRow][pieceCol] = chessboard[destRow][destCol];
-    chessboard[destRow][destCol] = destinationCellContents;
+    chess.chessboard[pieceRow][pieceCol] = chess.chessboard[destRow][destCol];
+    chess.chessboard[destRow][destCol] = destinationCellContents;
 
     return result;
-}
-
-/** Returns true if the row and column indexes passed as arguments
- * are in-bounds in the chessboard matrix. */
-function inBounds(row, col) {
-    return (row >= 0 && row <= MAX_ROW && col >= 0 && col <= MAX_COL);
 }
 
 /** Returns the opponent of a specific player. */
@@ -941,15 +932,15 @@ function getKingPosition(player) {
 /** Returns an object containing data for a specific piece,
  * or undefined if parameters are not valid. */
 function pieceAt(row, col) {
-    if(!inBounds(row, col)) {
+    if(!chess.inBounds(row, col)) {
         return undefined;
     } else {
-        if(chessboard[row][col] === EMPTY_CELL) {
+        if(chess.chessboard[row][col] === EMPTY_CELL) {
             return EMPTY_CELL;
         } else {
             return {
-                type: chessboard[row][col][0],
-                owner: chessboard[row][col][1]
+                type: chess.chessboard[row][col][0],
+                owner: chess.chessboard[row][col][1]
             };
         }
     }
@@ -1068,4 +1059,3 @@ function canSquareBeCaptured(row, col, player) {
 
     return false;
 }
-
