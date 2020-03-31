@@ -974,7 +974,7 @@ function performAITurn(aiColor) {
     let piece, target, arrPossibleMoves;
     
     let aiPossibleMoves = [];
-    let moveValue, maxMoveValue = -100, minMoveValue = 100;
+    let moveValue, maxMoveValue = -100;
 
     for (let r = 0; r <= MAX_ROW; r++) {
         for (let c = 0; c <= MAX_COL; c++) {
@@ -1004,9 +1004,6 @@ function performAITurn(aiColor) {
 
                             if(moveValue > maxMoveValue) {
                                 maxMoveValue = moveValue;
-                            }
-                            if(moveValue < minMoveValue) {
-                                minMoveValue = moveValue;
                             }
                         }
                     });
