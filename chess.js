@@ -143,9 +143,7 @@ let MAX_ROW;
 let messageTurnElem;
 let messageWarningElem;
 
-let gameState;
 let aiColor;
-let activePlayer;
 let selectedPiece = {
     row: -1,
     col: -1
@@ -223,7 +221,7 @@ function handleMenuFormSubmit(event) {
     initUI();
 
     if(chess.isAITurn())
-        performAITurn(activePlayer);
+        performAITurn(chess.activePlayer);
 }
 
 function initUI() {
@@ -231,7 +229,7 @@ function initUI() {
     let table = createChessboardTableHTML(chess.numRows, chess.numCols);
     document.getElementById("grid-container").appendChild(table);
 
-    setPlayerTurnText(activePlayer);
+    setPlayerTurnText(chess.activePlayer);
 }
 
 function createChessboardTableHTML(numRows, numCols) {
@@ -292,12 +290,12 @@ function handleHTMLCellClick(e) {
 }
 
 function handleCellSelected(row, col) {
-    if(gameState === GameStateEnum.GameOver)
+    if(chess.gameState === GameStateEnum.GameOver)
         return;
 
-    if(gameState === GameStateEnum.SelectPiece) {
+    if(chess.gameState === GameStateEnum.SelectPiece) {
         if(chess.pieceAt(row, col) !== EMPTY_CELL) {
-            if(chess.pieceAt(row, col).owner === activePlayer) {
+            if(chess.pieceAt(row, col).owner === chess.activePlayer) {
                 if(!chess.isAITurn()) {
                     //console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
                     let arrPossibleMoves = getPossibleMovesForPiece(row, col);
@@ -307,13 +305,13 @@ function handleCellSelected(row, col) {
 
                 selectedPiece.row = row;
                 selectedPiece.col = col;
-                gameState = GameStateEnum.SelectDestination;
+                chess.gameState = GameStateEnum.SelectDestination;
             }
         }
         else {
             //console.log(`Clicked on cell ${row}-${col}. Empty`);
         }
-    } else if(gameState === GameStateEnum.SelectDestination) {
+    } else if(chess.gameState === GameStateEnum.SelectDestination) {
         // If user clicks again on the piece they're trying to move, do nothing
         if(row === selectedPiece.row && col === selectedPiece.col) {
             //console.log("You have already selected this piece.")
@@ -357,7 +355,7 @@ function handleCellSelected(row, col) {
                 }
             }
 
-            let enemyPlayer = getEnemy(activePlayer);
+            let enemyPlayer = getEnemy(chess.activePlayer);
             let enemyKingInCheck = isKingInCheck(enemyPlayer);
             
             if(hasLegalMoves(enemyPlayer)) {
@@ -367,17 +365,17 @@ function handleCellSelected(row, col) {
                     // which forces it to be displayed as emoji
                     // https://emojipedia.org/emoji/%E2%9A%A0/
                     // https://emojipedia.org/variation-selector-16/
-                    messageWarningElem.innerHTML = (activePlayer === PlayerEnum.White)
+                    messageWarningElem.innerHTML = (chess.activePlayer === PlayerEnum.White)
                         ? "⚠&#xFE0F; Black king check! ⚠&#xFE0F;"
                         : "⚠&#xFE0F; White king check! ⚠&#xFE0F;";
                 } else {
                     messageWarningElem.innerText = "";
                 }
             } else {
-                gameState = GameStateEnum.GameOver;
+                chess.gameState = GameStateEnum.GameOver;
 
                 if(enemyKingInCheck) {
-                    messageTurnElem.innerText = (activePlayer === PlayerEnum.White)
+                    messageTurnElem.innerText = (chess.activePlayer === PlayerEnum.White)
                         ? "🏆 White wins! 🏆"
                         : "🏆 Black wins! 🏆";
                     messageWarningElem.innerText = "Checkmate.";
@@ -390,11 +388,11 @@ function handleCellSelected(row, col) {
                 }
             }
 
-            if(gameState !== GameStateEnum.GameOver) {
+            if(chess.gameState !== GameStateEnum.GameOver) {
                 changeTurn();
             }
         } else {
-            gameState = GameStateEnum.SelectPiece;
+            chess.gameState = GameStateEnum.SelectPiece;
             handleCellSelected(row, col);
         }
     }
@@ -414,12 +412,12 @@ function setSelectionMarkerActive(row, col, display) {
 }
 
 function changeTurn() {
-    gameState = GameStateEnum.SelectPiece;
-    activePlayer = getEnemy(activePlayer);
-    setPlayerTurnText(activePlayer);
+    chess.gameState = GameStateEnum.SelectPiece;
+    chess.activePlayer = getEnemy(chess.activePlayer);
+    setPlayerTurnText(chess.activePlayer);
 
     if(chess.isAITurn())
-        performAITurn(activePlayer);
+        performAITurn(chess.activePlayer);
 }
 
 /** Shows a message saying which player should move. */
