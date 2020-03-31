@@ -128,6 +128,20 @@ class Chess {
         }
     }
 
+    changeTurn() {
+        this.gameState = GameStateEnum.SelectPiece;
+        this.activePlayer = this.getEnemy(this.activePlayer);
+        setPlayerTurnText(this.activePlayer);
+    
+        if(this.isAITurn())
+            performAITurn(this.activePlayer);
+    }
+
+    /** Returns the opponent of a specific player. */
+    getEnemy(player) {
+        return (player === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
+    }
+
     isAITurn() {
         return this.aiEnabled && this.activePlayer === this.aiColor;
     }
@@ -352,7 +366,7 @@ function handleCellSelected(row, col) {
                 }
             }
 
-            let enemyPlayer = getEnemy(chess.activePlayer);
+            let enemyPlayer = chess.getEnemy(chess.activePlayer);
             let enemyKingInCheck = isKingInCheck(enemyPlayer);
             
             if(hasLegalMoves(enemyPlayer)) {
@@ -386,7 +400,7 @@ function handleCellSelected(row, col) {
             }
 
             if(chess.gameState !== GameStateEnum.GameOver) {
-                changeTurn();
+                chess.changeTurn();
             }
         } else {
             chess.gameState = GameStateEnum.SelectPiece;
@@ -406,15 +420,6 @@ function setSelectionMarkerActive(row, col, display) {
         cellElement.classList.add("cell-selected");
     else
         cellElement.classList.remove("cell-selected");
-}
-
-function changeTurn() {
-    chess.gameState = GameStateEnum.SelectPiece;
-    chess.activePlayer = getEnemy(chess.activePlayer);
-    setPlayerTurnText(chess.activePlayer);
-
-    if(chess.isAITurn())
-        performAITurn(chess.activePlayer);
 }
 
 /** Shows a message saying which player should move. */
@@ -828,7 +833,7 @@ function doesMovePutKingInCheck(pieceRow, pieceCol, destRow, destCol) {
 
 /** Returns whether moving a piece puts a square in danger. */
 function doesMoveMakeSquareCapturable(pieceRow, pieceCol, destRow, destCol, squareRow, squareCol) {
-    let enemyPlayer = getEnemy(chess.pieceAt(pieceRow, pieceCol).owner);
+    let enemyPlayer = chess.getEnemy(chess.pieceAt(pieceRow, pieceCol).owner);
     let destinationCellContents = chess.chessboard[destRow][destCol];
     // Move piece on destination square
     chess.chessboard[destRow][destCol] = chess.chessboard[pieceRow][pieceCol];
@@ -842,11 +847,6 @@ function doesMoveMakeSquareCapturable(pieceRow, pieceCol, destRow, destCol, squa
     chess.chessboard[destRow][destCol] = destinationCellContents;
 
     return result;
-}
-
-/** Returns the opponent of a specific player. */
-function getEnemy(player) {
-    return (player === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
 }
 
 function coordsToId(row, col) {
