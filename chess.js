@@ -127,6 +127,10 @@ class Chess {
             }
         }
     }
+
+    isAITurn() {
+        return this.aiEnabled && this.activePlayer === this.aiColor;
+    }
 }
 
 // I made these because sometimes I forget to check array indexes
@@ -218,7 +222,7 @@ function handleMenuFormSubmit(event) {
     chess.startGame(choiceChessboard, choiceAI, choiceColor);
     initUI();
 
-    if(isAITurn())
+    if(chess.isAITurn())
         performAITurn(activePlayer);
 }
 
@@ -228,10 +232,6 @@ function initUI() {
     document.getElementById("grid-container").appendChild(table);
 
     setPlayerTurnText(activePlayer);
-}
-
-function isAITurn() {
-    return aiOpponent && activePlayer === aiColor;
 }
 
 function createChessboardTableHTML(numRows, numCols) {
@@ -298,7 +298,7 @@ function handleCellSelected(row, col) {
     if(gameState === GameStateEnum.SelectPiece) {
         if(chess.pieceAt(row, col) !== EMPTY_CELL) {
             if(chess.pieceAt(row, col).owner === activePlayer) {
-                if(!isAITurn()) {
+                if(!chess.isAITurn()) {
                     //console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
                     let arrPossibleMoves = getPossibleMovesForPiece(row, col);
                     setSelectionMarkerActive(row, col, true);
@@ -322,7 +322,7 @@ function handleCellSelected(row, col) {
         
         let arrPossibleMoves = getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col);
 
-        if(!isAITurn()) {
+        if(!chess.isAITurn()) {
             setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
             setDisplayDestinationActive(arrPossibleMoves, false);
         }
@@ -418,7 +418,7 @@ function changeTurn() {
     activePlayer = getEnemy(activePlayer);
     setPlayerTurnText(activePlayer);
 
-    if(isAITurn())
+    if(chess.isAITurn())
         performAITurn(activePlayer);
 }
 
