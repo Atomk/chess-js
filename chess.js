@@ -187,7 +187,7 @@ function handleMenuFormSubmit(event) {
     document.getElementById("grid-container").classList.remove("hidden");
     document.getElementById("messages-container").classList.remove("hidden");
 
-    let choiceColor, choiceAI, choiceChessboard;
+    let choicePlayerColor, choiceAI, choiceChessboard;
     // https://stackoverflow.com/a/26236365
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
     for(const input of form.elements) {
@@ -202,8 +202,8 @@ function handleMenuFormSubmit(event) {
                     break;
                 case "options-color":
                     switch(input.id) {
-                        case "color-choice-white": choiceColor = PlayerEnum.White; break;
-                        case "color-choice-black": choiceColor = PlayerEnum.Black; break;
+                        case "color-choice-white": choicePlayerColor = PlayerEnum.White; break;
+                        case "color-choice-black": choicePlayerColor = PlayerEnum.Black; break;
                         default: console.error(`Option ${input.id} not recognized.`); break;
                     }
                     break;
@@ -223,12 +223,9 @@ function handleMenuFormSubmit(event) {
         }
     }
 
-    // If AI is disabled, ignore color options
-    if(choiceAI === false) {
-        choiceColor = PlayerEnum.White;
-    }
+    let aiColor = chess.getEnemy(choicePlayerColor);
+    chess.startGame(choiceChessboard, choiceAI, aiColor);
 
-    chess.startGame(choiceChessboard, choiceAI, choiceColor);
     MAX_ROW = chess.MAX_ROW;
     MAX_COL = chess.MAX_COL;
     initUI();
