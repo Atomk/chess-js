@@ -1,5 +1,9 @@
-body {
-    font-family: Helvetica, Arial, sans-serif;
+body, a {
+    font-family: Roboto, sans-serif;
+}
+
+h1, h2 {
+    font-family: Gotu, sans-serif;
 }
 
 h1 {
@@ -55,7 +59,7 @@ https://stackoverflow.com/a/4407335 */
     color: #777;
     position: absolute;
     right: 0;
-    bottom: 5px;
+    bottom: 10px;
 }
 
 #options button {
