@@ -40,6 +40,7 @@ piecesUnicode[PlayerEnum.Black][PieceTypeEnum.King] = "♚";
 piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Queen] = "♛";
 Object.freeze(piecesUnicode);
 
+/** Contains the playable chessboard configurations. */
 const chessboardsList = {
     _8x8Standard: [
         ["r2", "h2", "b2", "q2", "k2", "b2", "h2", "r2"],
@@ -76,6 +77,7 @@ const chessboardsList = {
 };
 Object.freeze(chessboardsList);
 
+/** Represents an empty cell in a chessboard matrix. */
 const EMPTY_CELL = "  ";
 
 class PossibleMove {
@@ -211,6 +213,7 @@ class Chess {
     
                 handlePieceMoved(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
+                // Check if this move involves pawn promotion
                 let piece = this.pieceAt(row, col);
                 if(piece.type === PieceTypeEnum.Pawn) {
                     let promotionWhite = (piece.owner === PlayerEnum.White && row === 0)
@@ -845,6 +848,7 @@ function handleSelectedDestinationForPiece(pieceRow, pieceCol, possibleMoves) {
 }
 
 function handlePieceMoved(pieceRow, pieceCol, targetRow, targetCol) {
+    // This is not a big issue, but consider reading this - https://stackoverflow.com/a/2305677
     let selectedPieceHTMLCell = getHTMLCellByCoords(pieceRow, pieceCol)
     getHTMLCellByCoords(targetRow, targetCol).innerHTML = selectedPieceHTMLCell.innerHTML;
     selectedPieceHTMLCell.innerHTML = "";
@@ -1074,6 +1078,8 @@ function performAITurn(aiColor) {
     chess.handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
 }
 
+// TODO use this instead of isKingInCheck, but avoid infinite recursion
+// TODO find a way to avoid having to calc possible moves multiple times
 function canSquareBeCaptured(row, col, player) {
     if(typeof(player) === undefined) {
         console.error("Missing argument.");
