@@ -209,7 +209,7 @@ class Chess {
         this.chessboard[destRow][destCol] = this.chessboard[pieceRow][pieceCol];
         this.chessboard[pieceRow][pieceCol] = EMPTY_CELL;
 
-        let kingInCheck = isKingInCheck(pieceOwner);
+        let kingInCheck = this.isKingInCheck(pieceOwner);
 
         // This function uses the original chessboard to avoid creating
         // a copy of the chessboard matrix on every call
@@ -217,6 +217,41 @@ class Chess {
         this.chessboard[destRow][destCol] = destinationCellContents;
 
         return kingInCheck;
+    }
+
+    /** Returns whether a king can be captured by an enemy piece. */
+    isKingInCheck(kingOwner) {
+        let arrPossibleMoves;
+        let enemyRow, enemyCol;
+
+        for (let r = 0; r <= MAX_ROW; r++) {
+            for (let c = 0; c <= MAX_COL; c++) {
+                // For every piece on the chessboard...
+                if (this.pieceAt(r, c) !== EMPTY_CELL) {
+                    // ...owned by the king's enemy...
+                    if (this.pieceAt(r, c).owner !== kingOwner) {
+                        // Last parameter is false because is doesn't matter
+                        // if the enemy will put their king to risk,
+                        // if they capture the enemy king they win
+                        arrPossibleMoves = this.getPossibleMovesForPiece(r, c, false);
+                        // ...check all the cells that piece can be moved to
+                        for (let i = 0; i < arrPossibleMoves.length; i++) {
+                            // If the piece can capture another piece...
+                            if (arrPossibleMoves[i].isEnemy) {
+                                enemyRow = arrPossibleMoves[i].row;
+                                enemyCol = arrPossibleMoves[i].col;
+                                // ...and that piece is the king...
+                                if (this.pieceAt(enemyRow, enemyCol).type === PieceTypeEnum.King) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     // *******************
@@ -736,7 +771,7 @@ function handleCellSelected(row, col) {
             }
 
             let enemyPlayer = chess.getEnemy(chess.activePlayer);
-            let enemyKingInCheck = isKingInCheck(enemyPlayer);
+            let enemyKingInCheck = chess.isKingInCheck(enemyPlayer);
             
             if(hasLegalMoves(enemyPlayer)) {
                 if(enemyKingInCheck) {
@@ -862,41 +897,6 @@ function coordsToId(row, col) {
 
 function getHTMLCellByCoords(row, col) {
     return document.getElementById(coordsToId(row, col));
-}
-
-/** Returns whether a king can be captured by an enemy piece. */
-function isKingInCheck(kingOwner) {
-    let arrPossibleMoves;
-    let enemyRow, enemyCol;
-
-    for (let r = 0; r <= MAX_ROW; r++) {
-        for (let c = 0; c <= MAX_COL; c++) {
-            // For every piece on the chessboard...
-            if (chess.pieceAt(r, c) !== EMPTY_CELL) {
-                // ...owned by the king's enemy...
-                if (chess.pieceAt(r, c).owner !== kingOwner) {
-                    // Last parameter is false because is doesn't matter
-                    // if the enemy will put their king to risk,
-                    // if they capture the enemy king they win
-                    arrPossibleMoves = chess.getPossibleMovesForPiece(r, c, false);
-                    // ...check all the cells that piece can be moved to
-                    for (let i = 0; i < arrPossibleMoves.length; i++) {
-                        // If the piece can capture another piece...
-                        if (arrPossibleMoves[i].isEnemy) {
-                            enemyRow = arrPossibleMoves[i].row;
-                            enemyCol = arrPossibleMoves[i].col;
-                            // ...and that piece is the king...
-                            if (chess.pieceAt(enemyRow, enemyCol).type === PieceTypeEnum.King) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return false;
 }
 
 /**
