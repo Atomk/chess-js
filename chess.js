@@ -167,6 +167,93 @@ class Chess {
         return this.aiEnabled && this.activePlayer === this.aiColor;
     }
 
+    handleCellSelected(row, col) {
+        if(this.gameState === GameStateEnum.GameOver)
+            return;
+    
+        if(this.gameState === GameStateEnum.SelectPiece) {
+            if(this.pieceAt(row, col) !== EMPTY_CELL) {
+                if(this.pieceAt(row, col).owner === this.activePlayer) {
+                    if(!this.isAITurn())
+                        handleSelectedOwnPiece(row, col, this.getPossibleMovesForPiece(row, col));
+    
+                    this.selectedPiece.row = row;
+                    this.selectedPiece.col = col;
+                    this.gameState = GameStateEnum.SelectDestination;
+                }
+            }
+        } else if(this.gameState === GameStateEnum.SelectDestination) {
+            // If user clicks again on the piece they're trying to move, do nothing
+            if(row === this.selectedPiece.row && col === this.selectedPiece.col) {
+                return;
+            }
+            
+            let arrPossibleMoves = this.getPossibleMovesForPiece(this.selectedPiece.row, this.selectedPiece.col);
+
+            if(!this.isAITurn())
+                handleSelectedDestinationForPiece(this.selectedPiece.row, this.selectedPiece.col)
+            
+            let isValidMove = false;
+            // Check if the selected piece can be moved in the clicked cell
+            for(let i=0; i<arrPossibleMoves.length; i++) {
+                if(arrPossibleMoves[i].row === row
+                        && arrPossibleMoves[i].col === col
+                        && !arrPossibleMoves[i].putsOwnKingInCheck) {
+                    
+                    isValidMove = true;
+                    break;
+                }
+            }
+    
+            if(isValidMove) {
+                this.chessboard[row][col] = this.chessboard[this.selectedPiece.row][this.selectedPiece.col];
+                this.chessboard[this.selectedPiece.row][this.selectedPiece.col] = EMPTY_CELL;
+    
+                handlePieceMoved(this.selectedPiece.row, this.selectedPiece.col, row, col);
+
+                let piece = this.pieceAt(row, col);
+                if(piece.type === PieceTypeEnum.Pawn) {
+                    let promotionWhite = (piece.owner === PlayerEnum.White && row === 0)
+                    let promotionBlack = (piece.owner === PlayerEnum.Black && row === MAX_ROW);
+                    if(promotionWhite || promotionBlack) {
+                        let promotionType = PieceTypeEnum.Queen;
+                        // TODO allow choosing what piece to promote to
+                        this.chessboard[row][col] = `${promotionType}${piece.owner}`;
+
+                        handlePiecePromoted(row, col, piece.owner, promotionType);
+                    }
+                }
+    
+                let enemyPlayer = this.getEnemy(this.activePlayer);
+                let enemyKingInCheck = this.isKingInCheck(enemyPlayer);
+                
+                if(hasLegalMoves(enemyPlayer)) {
+                    if(enemyKingInCheck) {
+                        handleTurnEnd(this.activePlayer, true);
+                    } else {
+                        handleTurnEnd(this.activePlayer, false);
+                    }
+                } else {
+                    this.gameState = GameStateEnum.GameOver;
+    
+                    if(enemyKingInCheck) {
+                        handleGameOver(this.activePlayer, "checkmate");
+                    }
+                    else {
+                        handleGameOver(this.activePlayer, "stalemate");
+                    }
+                }
+    
+                if(this.gameState !== GameStateEnum.GameOver) {
+                    this.changeTurn();
+                }
+            } else {
+                this.gameState = GameStateEnum.SelectPiece;
+                this.handleCellSelected(row, col);
+            }
+        }
+    }
+
     // ****************************
     //   PIECES MOVEMENT HANDLING
     // ****************************
@@ -709,115 +796,65 @@ function handleHTMLCellClick(e) {
     let row = Number(idArray[1]);
     let col = Number(idArray[2]);
 
-    handleCellSelected(row, col);
+    chess.handleCellSelected(row, col);
 }
 
-function handleCellSelected(row, col) {
-    if(chess.gameState === GameStateEnum.GameOver)
-        return;
 
-    if(chess.gameState === GameStateEnum.SelectPiece) {
-        if(chess.pieceAt(row, col) !== EMPTY_CELL) {
-            if(chess.pieceAt(row, col).owner === chess.activePlayer) {
-                if(!chess.isAITurn()) {
-                    //console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
-                    let arrPossibleMoves = chess.getPossibleMovesForPiece(row, col);
-                    setSelectionMarkerActive(row, col, true);
-                    setDisplayDestinationActive(arrPossibleMoves, true);
-                }
+function handleSelectedOwnPiece(row, col, possibleMoves) {
+    //console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
+    setSelectionMarkerActive(row, col, true);
+    setDisplayDestinationActive(possibleMoves, true);
+}
 
-                chess.selectedPiece.row = row;
-                chess.selectedPiece.col = col;
-                chess.gameState = GameStateEnum.SelectDestination;
-            }
-        }
-        else {
-            //console.log(`Clicked on cell ${row}-${col}. Empty`);
-        }
-    } else if(chess.gameState === GameStateEnum.SelectDestination) {
-        // If user clicks again on the piece they're trying to move, do nothing
-        if(row === chess.selectedPiece.row && col === chess.selectedPiece.col) {
-            //console.log("You have already selected this piece.")
-            return;
-        }
-        
-        let arrPossibleMoves = chess.getPossibleMovesForPiece(chess.selectedPiece.row, chess.selectedPiece.col);
+function handleSelectedDestinationForPiece(pieceRow, pieceCol, possibleMoves) {
+    setSelectionMarkerActive(pieceRow, pieceCol, false);
+    setDisplayDestinationActive(possibleMoves, false);
+}
 
-        if(!chess.isAITurn()) {
-            setSelectionMarkerActive(chess.selectedPiece.row, chess.selectedPiece.col, false);
-            setDisplayDestinationActive(arrPossibleMoves, false);
-        }
+function handlePieceMoved(pieceRow, pieceCol, targetRow, targetCol) {
+    let selectedPieceHTMLCell = getHTMLCellByCoords(pieceRow, pieceCol)
+    getHTMLCellByCoords(targetRow, targetCol).innerHTML = selectedPieceHTMLCell.innerHTML;
+    selectedPieceHTMLCell.innerHTML = "";
+}
 
-        let isValidMove = false;
-        // Check if the selected piece can be moved in the clicked cell
-        for(let i=0; i<arrPossibleMoves.length; i++) {
-            if(arrPossibleMoves[i].row === row && arrPossibleMoves[i].col === col && !arrPossibleMoves[i].putsOwnKingInCheck) {
-                isValidMove = true;
-                break;
-            }
-        }
+// Visually replaces a pawn with another piece
+function handlePiecePromoted(row, col, pieceColor, promotionType) {
+    getHTMLCellByCoords(row, col).firstChild.innerText = piecesUnicode[pieceColor][promotionType];
+}
 
-        if(isValidMove) {
-            chess.chessboard[row][col] = chess.chessboard[chess.selectedPiece.row][chess.selectedPiece.col];
-            chess.chessboard[chess.selectedPiece.row][chess.selectedPiece.col] = EMPTY_CELL;
+function handleTurnEnd(activePlayer, isCheck) {
+    if(isCheck) {
+        // The "⚠" emoji defaults to text on some browsers
+        // (i.e. Chrome on Windows 10), unless followed by U+FE0F
+        // which forces it to be displayed as emoji
+        // https://emojipedia.org/emoji/%E2%9A%A0/
+        // https://emojipedia.org/variation-selector-16/
+        messageWarningElem.innerHTML = (activePlayer === PlayerEnum.White)
+            ? "⚠&#xFE0F; Black king check! ⚠&#xFE0F;"
+            : "⚠&#xFE0F; White king check! ⚠&#xFE0F;";
+    } else {
+        messageWarningElem.innerText = "";
+    }
+}
 
-            let selectedPieceHTMLCell = getHTMLCellByCoords(chess.selectedPiece.row, chess.selectedPiece.col)
-            getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
-            selectedPieceHTMLCell.innerHTML = "";
+function handleGameOver(activePlayer, gameOverType) {
+    switch(gameOverType) {
+        case "checkmate":
+            messageTurnElem.innerText = (activePlayer === PlayerEnum.White)
+                ? "🏆 White wins! 🏆"
+                : "🏆 Black wins! 🏆";
+            messageWarningElem.innerText = "Checkmate.";
+            break;
 
-            let piece = chess.pieceAt(row, col);
-            if(piece.type === PieceTypeEnum.Pawn) {
-                let promotionWhite = (piece.owner === PlayerEnum.White && row === 0)
-                let promotionBlack = (piece.owner === PlayerEnum.Black && row === MAX_ROW);
-                if(promotionWhite || promotionBlack) {
-                    let promotionType = PieceTypeEnum.Queen;
-                    // TODO allow choosing what piece to promote to
-                    chess.chessboard[row][col] = `${promotionType}${piece.owner}`;
-                    // Visually replaces the pawn with the new piece
-                    getHTMLCellByCoords(row, col).firstChild.innerText = piecesUnicode[piece.owner][promotionType];
-                }
-            }
+        case "stalemate":
+            messageTurnElem.innerText = "🤝 It's a draw! 🤝";
+            messageWarningElem.innerText = (activePlayer === PlayerEnum.White)
+                ? "Stalemate. Black cannot move."
+                : "Stalemate. White cannot move.";
+            break;
 
-            let enemyPlayer = chess.getEnemy(chess.activePlayer);
-            let enemyKingInCheck = chess.isKingInCheck(enemyPlayer);
-            
-            if(hasLegalMoves(enemyPlayer)) {
-                if(enemyKingInCheck) {
-                    // The "⚠" emoji defaults to text on some browsers
-                    // (i.e. Chrome on Windows 10), unless followed by U+FE0F
-                    // which forces it to be displayed as emoji
-                    // https://emojipedia.org/emoji/%E2%9A%A0/
-                    // https://emojipedia.org/variation-selector-16/
-                    messageWarningElem.innerHTML = (chess.activePlayer === PlayerEnum.White)
-                        ? "⚠&#xFE0F; Black king check! ⚠&#xFE0F;"
-                        : "⚠&#xFE0F; White king check! ⚠&#xFE0F;";
-                } else {
-                    messageWarningElem.innerText = "";
-                }
-            } else {
-                chess.gameState = GameStateEnum.GameOver;
-
-                if(enemyKingInCheck) {
-                    messageTurnElem.innerText = (chess.activePlayer === PlayerEnum.White)
-                        ? "🏆 White wins! 🏆"
-                        : "🏆 Black wins! 🏆";
-                    messageWarningElem.innerText = "Checkmate.";
-                }
-                else {
-                    messageTurnElem.innerText = "🤝 It's a draw! 🤝";
-                    messageWarningElem.innerText = (enemyPlayer === PlayerEnum.White)
-                        ? "Stalemate. White cannot move."
-                        : "Stalemate. Black cannot move.";
-                }
-            }
-
-            if(chess.gameState !== GameStateEnum.GameOver) {
-                chess.changeTurn();
-            }
-        } else {
-            chess.gameState = GameStateEnum.SelectPiece;
-            handleCellSelected(row, col);
-        }
+        default:
+            console.error("Unrecognized game over type.");
     }
 }
 
@@ -1021,8 +1058,8 @@ function performAITurn(aiColor) {
         + ` to square ${bestMoveObj.targetRow}-${bestMoveObj.targetCol}. Move value: ${maxMoveValue}`)
 
     // TODO should disable graphic functions like setSelectionMarkerActive when AI is playing its turn
-    handleCellSelected(bestMoveObj.pieceRow, bestMoveObj.pieceCol);
-    handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
+    chess.handleCellSelected(bestMoveObj.pieceRow, bestMoveObj.pieceCol);
+    chess.handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
 }
 
 function canSquareBeCaptured(row, col, player) {
