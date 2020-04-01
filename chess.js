@@ -191,7 +191,7 @@ class Chess {
             let arrPossibleMoves = this.getPossibleMovesForPiece(this.selectedPiece.row, this.selectedPiece.col);
 
             if(!this.isAITurn())
-                handleSelectedDestinationForPiece(this.selectedPiece.row, this.selectedPiece.col)
+                handleSelectedDestinationForPiece(this.selectedPiece.row, this.selectedPiece.col, arrPossibleMoves);
             
             let isValidMove = false;
             // Check if the selected piece can be moved in the clicked cell
