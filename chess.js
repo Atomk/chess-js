@@ -173,7 +173,7 @@ class Chess {
         let arrMoves = [];
 
         switch(pieceToMove.type) {
-            case PieceTypeEnum.Pawn: arrMoves = getPawnMoves(row, col); break;
+            case PieceTypeEnum.Pawn: arrMoves = this.getPawnMoves(row, col); break;
             case PieceTypeEnum.Knight: arrMoves = getKnightMoves(row, col); break;
             case PieceTypeEnum.Bishop: arrMoves = getBishopMoves(row, col); break;
             case PieceTypeEnum.Rook: arrMoves = getRookMoves(row, col); break;
@@ -209,6 +209,51 @@ class Chess {
         this.chessboard[destRow][destCol] = destinationCellContents;
 
         return kingInCheck;
+    }
+
+    getPawnMoves(row, col) {
+        let pieceToMove = this.pieceAt(row, col);
+        // White pawns can only go up, black pawns can only go down
+        let direction = (pieceToMove.owner === PlayerEnum.White) ? -1 : 1;
+        let arrMoves = [];
+        let targetCell;
+        let r = row + (1 * direction);
+    
+        // If pawn can go one step forward
+        if(this.inBounds(r, col)) {
+            // If cell forward-left has enemy
+            if(col > 0) {
+                targetCell = this.pieceAt(r, col-1);
+                if(targetCell !== EMPTY_CELL && targetCell.owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, col-1, true));
+                }
+            }
+            // If cell forward-right has enemy
+            if(col < MAX_COL) {
+                targetCell = this.pieceAt(r, col+1);
+                if(targetCell !== EMPTY_CELL && targetCell.owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, col+1, true));
+                }
+            }
+    
+            // If cell forward is free
+            targetCell = this.pieceAt(r, col);
+            if(targetCell === EMPTY_CELL) {
+                arrMoves.push(new PossibleMove(r, col, false));
+    
+                // TODO This will have to be changed when implementing custom chessboard
+                let startingRow = (pieceToMove.owner === PlayerEnum.White) ? MAX_ROW-1 : 1;
+                
+                // If the pawn is at its starting position and has two free cells fprward
+                if(row === startingRow) {
+                    r = row + 2 * direction;
+                    if(this.pieceAt(r, col) === EMPTY_CELL)
+                        arrMoves.push(new PossibleMove(r, col, false));
+                }
+            }
+        }
+    
+        return arrMoves;
     }
 }
 
@@ -527,52 +572,6 @@ class PossibleMove {
     setIllegal() {
         this.putsOwnKingInCheck = true;
     }
-}
-
-function getPawnMoves(row, col) {
-    let pieceToMove = chess.pieceAt(row, col);
-    // White pawns can only go up, black pawns can only go down
-    let direction = (pieceToMove.owner === PlayerEnum.White) ? -1 : 1;
-    let arrMoves = [];
-    let targetCell, r;
-
-    r = row + (1 * direction);
-
-    // If pawn can go one step forward
-    if(chess.inBounds(r, col)) {
-        // If cell forward-left has enemy
-        if(col > 0) {
-            targetCell = chess.pieceAt(r, col-1);
-            if(targetCell !== EMPTY_CELL && targetCell.owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, col-1, true));
-            }
-        }
-        // If cell forward-right has enemy
-        if(col < MAX_COL) {
-            targetCell = chess.pieceAt(r, col+1);
-            if(targetCell !== EMPTY_CELL && targetCell.owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, col+1, true));
-            }
-        }
-
-        // If cell forward is free
-        targetCell = chess.pieceAt(r, col);
-        if(targetCell === EMPTY_CELL) {
-            arrMoves.push(new PossibleMove(r, col, false));
-
-            // TODO This will have to be changed when implementing custom chessboard
-            let startingRow = (pieceToMove.owner === PlayerEnum.White) ? MAX_ROW-1 : 1;
-            
-            // If the pawn is at its starting position and has two free cells fprward
-            if(row === startingRow) {
-                r = row + 2 * direction;
-                if(chess.pieceAt(r, col) === EMPTY_CELL)
-                    arrMoves.push(new PossibleMove(r, col, false));
-            }
-        }
-    }
-
-    return arrMoves;
 }
 
 function getKnightMoves(row, col) {
