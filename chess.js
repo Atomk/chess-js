@@ -146,12 +146,6 @@ class Chess {
         return this.aiEnabled && this.activePlayer === this.aiColor;
     }
 
-// I made these because sometimes I forget to check array indexes
-// against "GRID_SIZE-1" instead of just "GRID_SIZE"
-// There are two different variables because in the future
-// I want to support different grid sizes
-let MAX_COL;
-let MAX_ROW;
     // *******************
     //   PIECES MOVEMENT
     // *******************
@@ -227,6 +221,8 @@ let selectedPiece = {
 };
 
 let chess = new Chess();
+let MAX_COL;
+let MAX_ROW;
 
 document.body.onload = function() {
     messageTurnElem = document.getElementById("msg-turn");
@@ -292,6 +288,7 @@ function handleMenuFormSubmit(event) {
 
     MAX_ROW = chess.MAX_ROW;
     MAX_COL = chess.MAX_COL;
+    
     initUI();
 
     if(chess.isAITurn())
