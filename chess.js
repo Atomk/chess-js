@@ -408,7 +408,7 @@ class Chess {
         let pieceToMove = this.pieceAt(row, col);
         let target;
     
-        function knightCheck(r, c) {
+        const knightCheck = (r, c) => {
             if(this.inBounds(r, c)) {
                 target = this.pieceAt(r, c);
                 if(target === EMPTY_CELL) {
