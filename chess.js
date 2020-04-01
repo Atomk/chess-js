@@ -725,7 +725,15 @@ function handleMenuFormSubmit(event) {
     // https://stackoverflow.com/a/26236365
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
     for(const input of form.elements) {
-        if(input.type == "radio" && input.checked) {
+        if(input.name === "options-chessboard") {
+            switch(input.value) {
+                case "chessboard-standard": choiceChessboard = chessboardsList._8x8Standard; break;
+                case "chessboard-6x6NoKnights": choiceChessboard = chessboardsList._6x6SimplerNoKnights; break;
+                case "chessboard-5x5babychess": choiceChessboard = chessboardsList._5x5BabyChess; break;
+                case "chessboard-4x5Silverman": choiceChessboard = chessboardsList._4x5Silverman; break;
+                default: console.error(`Option ${input.value} not recognized.`); break;
+            }
+        } else if(input.type == "radio" && input.checked) {
             switch(input.name) {
                 case "options-opponent":
                     switch(input.id) {
@@ -738,15 +746,6 @@ function handleMenuFormSubmit(event) {
                     switch(input.id) {
                         case "color-choice-white": choicePlayerColor = PlayerEnum.White; break;
                         case "color-choice-black": choicePlayerColor = PlayerEnum.Black; break;
-                        default: console.error(`Option ${input.id} not recognized.`); break;
-                    }
-                    break;
-                case "options-chessboard":
-                    switch(input.id) {
-                        case "chessboard-standard": choiceChessboard = chessboardsList._8x8Standard; break;
-                        case "chessboard-6x6NoKnights": choiceChessboard = chessboardsList._6x6SimplerNoKnights; break;
-                        case "chessboard-5x5babychess": choiceChessboard = chessboardsList._5x5BabyChess; break;
-                        case "chessboard-4x5Silverman": choiceChessboard = chessboardsList._4x5Silverman; break;
                         default: console.error(`Option ${input.id} not recognized.`); break;
                     }
                     break;

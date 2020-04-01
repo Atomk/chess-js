@@ -49,15 +49,16 @@
             <label for="color-choice-black">⚫ Black</label>
         </div>
         <div>
-            <h2 class="relative">Chessboard <a href="https://en.wikipedia.org/wiki/Minichess" target="_blank" class="title-info">More info</a></h2>
-            <input type="radio" id="chessboard-standard" name="options-chessboard" checked>
-            <label for="chessboard-standard">8x8 standard</label><br>
-            <input type="radio" id="chessboard-6x6NoKnights" name="options-chessboard">
-            <label for="chessboard-6x6NoKnights">6x6 no knights</label><br>
-            <input type="radio" id="chessboard-5x5babychess" name="options-chessboard">
-            <label for="chessboard-5x5babychess">5x5 "baby chess"</label><br>
-            <input type="radio" id="chessboard-4x5Silverman" name="options-chessboard">
-            <label for="chessboard-4x5Silverman">4x5 Silverman</label>
+            <h2 class="relative">
+                <label for="options-chessboard">Chessboard</label>
+                <a href="https://en.wikipedia.org/wiki/Minichess" target="_blank" class="title-info">More info</a>
+            </h2>
+            <select name="options-chessboard" id="pet-select">
+                <option value="chessboard-standard">8x8 standard</option>
+                <option value="chessboard-6x6NoKnights">6x6 no knights</option>
+                <option value="chessboard-5x5babychess">5x5 baby chess</option>
+                <option value="chessboard-4x5Silverman">4x5 Silverman</option>
+            </select>
         </div>
         <button type="submit">Start</button>
     </form>
