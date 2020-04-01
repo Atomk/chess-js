@@ -40,8 +40,6 @@ piecesUnicode[PlayerEnum.Black][PieceTypeEnum.King] = "♚";
 piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Queen] = "♛";
 Object.freeze(piecesUnicode);
 
-const EMPTY_CELL = "  ";
-
 const chessboardsList = {
     _8x8Standard: [
         ["r2", "h2", "b2", "q2", "k2", "b2", "h2", "r2"],
@@ -78,6 +76,21 @@ const chessboardsList = {
 };
 Object.freeze(chessboardsList);
 
+const EMPTY_CELL = "  ";
+
+class PossibleMove {
+    constructor(row, col, isEnemy) {
+        this.row = row;
+        this.col = col;
+        this.isEnemy = isEnemy;
+        this.putsOwnKingInCheck = false;
+    }
+
+    setIllegal() {
+        this.putsOwnKingInCheck = true;
+    }
+}
+
 class Chess {
     constructor() {
         this.MIN_ROWS = 2;
@@ -103,6 +116,11 @@ class Chess {
         this.activePlayer = PlayerEnum.White;
         this.gameState = GameStateEnum.SelectPiece;
         this.selectedPiece = { row: -1, col: -1 };
+    }
+
+    /** Returns the opponent of a specific player. */
+    getEnemy(player) {
+        return (player === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
     }
 
     // ******************
@@ -143,11 +161,6 @@ class Chess {
     
         if(this.isAITurn())
             performAITurn(this.activePlayer);
-    }
-
-    /** Returns the opponent of a specific player. */
-    getEnemy(player) {
-        return (player === PlayerEnum.White) ? PlayerEnum.Black : PlayerEnum.White;
     }
 
     isAITurn() {
@@ -857,19 +870,6 @@ function setDisplayDestinationActive(arrPossibleMoves, display) {
         if(display) {
             console.log("Nothing to display.");
         }
-    }
-}
-
-class PossibleMove {
-    constructor(row, col, isEnemy) {
-        this.row = row;
-        this.col = col;
-        this.isEnemy = isEnemy;
-        this.putsOwnKingInCheck = false;
-    }
-
-    setIllegal() {
-        this.putsOwnKingInCheck = true;
     }
 }
 
