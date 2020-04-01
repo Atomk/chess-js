@@ -229,6 +229,8 @@ function handleMenuFormSubmit(event) {
     }
 
     chess.startGame(choiceChessboard, choiceAI, choiceColor);
+    MAX_ROW = chess.MAX_ROW;
+    MAX_COL = chess.MAX_COL;
     initUI();
 
     if(chess.isAITurn())
