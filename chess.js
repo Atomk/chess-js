@@ -572,11 +572,6 @@ class Chess {
 let messageTurnElem;
 let messageWarningElem;
 
-let selectedPiece = {
-    row: -1,
-    col: -1
-};
-
 let chess = new Chess();
 let MAX_COL;
 let MAX_ROW;
@@ -731,8 +726,8 @@ function handleCellSelected(row, col) {
                     setDisplayDestinationActive(arrPossibleMoves, true);
                 }
 
-                selectedPiece.row = row;
-                selectedPiece.col = col;
+                chess.selectedPiece.row = row;
+                chess.selectedPiece.col = col;
                 chess.gameState = GameStateEnum.SelectDestination;
             }
         }
@@ -741,15 +736,15 @@ function handleCellSelected(row, col) {
         }
     } else if(chess.gameState === GameStateEnum.SelectDestination) {
         // If user clicks again on the piece they're trying to move, do nothing
-        if(row === selectedPiece.row && col === selectedPiece.col) {
+        if(row === chess.selectedPiece.row && col === chess.selectedPiece.col) {
             //console.log("You have already selected this piece.")
             return;
         }
         
-        let arrPossibleMoves = chess.getPossibleMovesForPiece(selectedPiece.row, selectedPiece.col);
+        let arrPossibleMoves = chess.getPossibleMovesForPiece(chess.selectedPiece.row, chess.selectedPiece.col);
 
         if(!chess.isAITurn()) {
-            setSelectionMarkerActive(selectedPiece.row, selectedPiece.col, false);
+            setSelectionMarkerActive(chess.selectedPiece.row, chess.selectedPiece.col, false);
             setDisplayDestinationActive(arrPossibleMoves, false);
         }
 
@@ -763,10 +758,10 @@ function handleCellSelected(row, col) {
         }
 
         if(isValidMove) {
-            chess.chessboard[row][col] = chess.chessboard[selectedPiece.row][selectedPiece.col];
-            chess.chessboard[selectedPiece.row][selectedPiece.col] = EMPTY_CELL;
+            chess.chessboard[row][col] = chess.chessboard[chess.selectedPiece.row][chess.selectedPiece.col];
+            chess.chessboard[chess.selectedPiece.row][chess.selectedPiece.col] = EMPTY_CELL;
 
-            let selectedPieceHTMLCell = getHTMLCellByCoords(selectedPiece.row, selectedPiece.col)
+            let selectedPieceHTMLCell = getHTMLCellByCoords(chess.selectedPiece.row, chess.selectedPiece.col)
             getHTMLCellByCoords(row, col).innerHTML = selectedPieceHTMLCell.innerHTML;
             selectedPieceHTMLCell.innerHTML = "";
 
