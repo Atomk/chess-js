@@ -182,11 +182,11 @@ class Chess {
 
         switch(pieceToMove.type) {
             case PieceTypeEnum.Pawn: arrMoves = this.getPawnMoves(row, col); break;
-            case PieceTypeEnum.Knight: arrMoves = getKnightMoves(row, col); break;
-            case PieceTypeEnum.Bishop: arrMoves = getBishopMoves(row, col); break;
+            case PieceTypeEnum.Knight: arrMoves = this.getKnightMoves(row, col); break;
+            case PieceTypeEnum.Bishop: arrMoves = this.getBishopMoves(row, col); break;
             case PieceTypeEnum.Rook: arrMoves = getRookMoves(row, col); break;
             case PieceTypeEnum.King: arrMoves = getKingMoves(row, col); break;
-            case PieceTypeEnum.Queen: arrMoves = getRookMoves(row, col).concat(getBishopMoves(row, col)); break;
+            case PieceTypeEnum.Queen: arrMoves = getRookMoves(row, col).concat(this.getBishopMoves(row, col)); break;
             default: console.error("Unrecognized piece type: " + pieceToMove.type);
         }
         
@@ -263,6 +263,100 @@ class Chess {
                         arrMoves.push(new PossibleMove(r, col, false));
                 }
             }
+        }
+    
+        return arrMoves;
+    }
+
+    getKnightMoves(row, col) {
+        let arrMoves = [];
+        let pieceToMove = this.pieceAt(row, col);
+        let target;
+    
+        function knightCheck(r, c) {
+            if(this.inBounds(r, c)) {
+                target = this.pieceAt(r, c);
+                if(target === EMPTY_CELL) {
+                    arrMoves.push(new PossibleMove(r, c, false));
+                } else if(target.owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, c, true));
+                }
+            }
+        }
+    
+        knightCheck(row-2, col-1); // Up left
+        knightCheck(row-2, col+1); // Up right
+        knightCheck(row+2, col-1); // Bottom left
+        knightCheck(row+2, col+1); // Bottom right
+        knightCheck(row+1, col-2); // Left up
+        knightCheck(row-1, col-2); // Left down
+        knightCheck(row+1, col+2); // Right up
+        knightCheck(row-1, col+2); // Right down
+    
+        return arrMoves;
+    }
+    
+    getBishopMoves(row, col) {
+        let arrMoves = [];
+        let pieceToMove = chess.pieceAt(row, col);
+        let r, c;
+            
+        // Up-left
+        r = row-1;
+        c = col-1;
+        while(this.inBounds(r, c)) {
+            if(this.pieceAt(r, c) === EMPTY_CELL) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else {
+                if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, c, true));
+                }
+                // This is not a free cell, so the piece cannot move anymore in this direction
+                break;
+            }
+            r--, c--;
+        }
+        // Up-right
+        r = row-1;
+        c = col+1;
+        while(this.inBounds(r, c)) {
+            if(this.pieceAt(r, c) === EMPTY_CELL) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else {
+                if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, c, true));
+                }
+                break;
+            }
+            r--, c++;
+        }
+        // Bottom-left
+        r = row+1;
+        c = col-1;
+        while(this.inBounds(r, c)) {
+            if(this.pieceAt(r, c) === EMPTY_CELL) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else {
+                if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, c, true));
+                }
+                break;
+            }
+            r++, c--;
+        }
+        // Bottom-right
+        r = row+1;
+        c = col+1;
+        while(this.inBounds(r, c)) {
+            if(this.pieceAt(r, c) === EMPTY_CELL) {
+                arrMoves.push(new PossibleMove(r, c, false));
+            } else {
+                if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
+                    arrMoves.push(new PossibleMove(r, c, true));
+                }
+                break;
+            }
+            r++, c++;
         }
     
         return arrMoves;
@@ -584,100 +678,6 @@ class PossibleMove {
     setIllegal() {
         this.putsOwnKingInCheck = true;
     }
-}
-
-function getKnightMoves(row, col) {
-    let arrMoves = [];
-    let pieceToMove = chess.pieceAt(row, col);
-    let target;
-
-    function knightCheck(r, c) {
-        if(chess.inBounds(r, c)) {
-            target = chess.pieceAt(r, c);
-            if(target === EMPTY_CELL) {
-                arrMoves.push(new PossibleMove(r, c, false));
-            } else if(target.owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-        }
-    }
-
-    knightCheck(row-2, col-1); // Up left
-    knightCheck(row-2, col+1); // Up right
-    knightCheck(row+2, col-1); // Bottom left
-    knightCheck(row+2, col+1); // Bottom right
-    knightCheck(row+1, col-2); // Left up
-    knightCheck(row-1, col-2); // Left down
-    knightCheck(row+1, col+2); // Right up
-    knightCheck(row-1, col+2); // Right down
-
-    return arrMoves;
-}
-
-function getBishopMoves(row, col) {
-    let arrMoves = [];
-    let pieceToMove = chess.pieceAt(row, col);
-    let r, c;
-        
-    // Up-left
-    r = row-1;
-    c = col-1;
-    while(chess.inBounds(r, c)) {
-        if(chess.pieceAt(r, c) === EMPTY_CELL) {
-            arrMoves.push(new PossibleMove(r, c, false));
-        } else {
-            if(chess.pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-            // This is not a free cell, so the piece cannot move anymore in this direction
-            break;
-        }
-        r--, c--;
-    }
-    // Up-right
-    r = row-1;
-    c = col+1;
-    while(chess.inBounds(r, c)) {
-        if(chess.pieceAt(r, c) === EMPTY_CELL) {
-            arrMoves.push(new PossibleMove(r, c, false));
-        } else {
-            if(chess.pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-            break;
-        }
-        r--, c++;
-    }
-    // Bottom-left
-    r = row+1;
-    c = col-1;
-    while(chess.inBounds(r, c)) {
-        if(chess.pieceAt(r, c) === EMPTY_CELL) {
-            arrMoves.push(new PossibleMove(r, c, false));
-        } else {
-            if(chess.pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-            break;
-        }
-        r++, c--;
-    }
-    // Bottom-right
-    r = row+1;
-    c = col+1;
-    while(chess.inBounds(r, c)) {
-        if(chess.pieceAt(r, c) === EMPTY_CELL) {
-            arrMoves.push(new PossibleMove(r, c, false));
-        } else {
-            if(chess.pieceAt(r, c).owner !== pieceToMove.owner) {
-                arrMoves.push(new PossibleMove(r, c, true));
-            }
-            break;
-        }
-        r++, c++;
-    }
-
-    return arrMoves;
 }
 
 function getRookMoves(row, col) {
