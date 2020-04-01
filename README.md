@@ -25,14 +25,15 @@ The chess game everyone knows and loves, in vanilla JavaScript. [Try it out!](ht
 ## To-do
 - Button to restart game on gameover (stalemate, checkmate), with same settings
 - Start game without menu, let user open the menu during play
-- Move all non-graphic functions into a class
-- Allow different chessboard sizes
+- Use a `<select>` for the chessboard selection
+- Improve styling (font, chessboard colors, menu...)
+- Decouple Chess class from UI functions
 - SVG icons for more consistency across browsers
 - https://en.wikipedia.org/wiki/Promotion_(chess)
 - https://en.wikipedia.org/wiki/Castling
 - https://en.wikipedia.org/wiki/En_passant
-- Allow user to choose its color (now it's white by default)
 - Make Ai wait a moment before doing its move
+- Highlight last moved piece
 - Undo
 - Timer
 - Tests!
