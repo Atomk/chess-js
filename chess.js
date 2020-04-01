@@ -229,18 +229,18 @@ class Chess {
                 
                 if(hasLegalMoves(enemyPlayer)) {
                     if(enemyKingInCheck) {
-                        handleTurnEnd(this.activePlayer, true);
+                        handleTurnEnd(this.activePlayer, "check");
                     } else {
-                        handleTurnEnd(this.activePlayer, false);
+                        handleTurnEnd(this.activePlayer, "");
                     }
                 } else {
                     this.gameState = GameStateEnum.GameOver;
     
                     if(enemyKingInCheck) {
-                        handleGameOver(this.activePlayer, "checkmate");
+                        handleTurnEnd(this.activePlayer, "checkmate");
                     }
                     else {
-                        handleGameOver(this.activePlayer, "stalemate");
+                        handleTurnEnd(this.activePlayer, "stalemate");
                     }
                 }
     
@@ -817,23 +817,23 @@ function handlePiecePromoted(row, col, pieceColor, promotionType) {
     getHTMLCellByCoords(row, col).firstChild.innerText = piecesUnicode[pieceColor][promotionType];
 }
 
-function handleTurnEnd(activePlayer, isCheck) {
-    if(isCheck) {
-        // The "⚠" emoji defaults to text on some browsers
-        // (i.e. Chrome on Windows 10), unless followed by U+FE0F
-        // which forces it to be displayed as emoji
-        // https://emojipedia.org/emoji/%E2%9A%A0/
-        // https://emojipedia.org/variation-selector-16/
-        messageWarningElem.innerHTML = (activePlayer === PlayerEnum.White)
-            ? "⚠&#xFE0F; Black king check! ⚠&#xFE0F;"
-            : "⚠&#xFE0F; White king check! ⚠&#xFE0F;";
-    } else {
-        messageWarningElem.innerText = "";
-    }
-}
+function handleTurnEnd(activePlayer, turnEndType) {
+    switch(turnEndType) {
+        case "":
+            messageWarningElem.innerText = "";
+            break;
 
-function handleGameOver(activePlayer, gameOverType) {
-    switch(gameOverType) {
+        case "check":
+            // The "⚠" emoji defaults to text on some browsers
+            // (i.e. Chrome on Windows 10), unless followed by U+FE0F
+            // which forces it to be displayed as emoji
+            // https://emojipedia.org/emoji/%E2%9A%A0/
+            // https://emojipedia.org/variation-selector-16/
+            messageWarningElem.innerHTML = (activePlayer === PlayerEnum.White)
+                ? "⚠&#xFE0F; Black king check! ⚠&#xFE0F;"
+                : "⚠&#xFE0F; White king check! ⚠&#xFE0F;";
+            break;
+
         case "checkmate":
             messageTurnElem.innerText = (activePlayer === PlayerEnum.White)
                 ? "🏆 White wins! 🏆"
