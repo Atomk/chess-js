@@ -346,7 +346,7 @@ class Chess {
     
     getBishopMoves(row, col) {
         let arrMoves = [];
-        let pieceToMove = chess.pieceAt(row, col);
+        let pieceToMove = this.pieceAt(row, col);
         let r, c;
             
         // Up-left
