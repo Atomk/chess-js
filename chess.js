@@ -227,7 +227,7 @@ class Chess {
                 let enemyPlayer = this.getEnemy(this.activePlayer);
                 let enemyKingInCheck = this.isKingInCheck(enemyPlayer);
                 
-                if(hasLegalMoves(enemyPlayer)) {
+                if(this.hasLegalMoves(enemyPlayer)) {
                     if(enemyKingInCheck) {
                         handleTurnEnd(this.activePlayer, "check");
                     } else {
@@ -344,6 +344,38 @@ class Chess {
                                 if (this.pieceAt(enemyRow, enemyCol).type === PieceTypeEnum.King) {
                                     return true;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // TODO: this is used only to differentiate checkmate from stalemate, 
+    // should find a way to recycle other functions to do this
+    /**
+     * Returns whether a player has legal moves.
+     * @param {*} player Player to check.
+     */
+    hasLegalMoves(player) {
+        let arrPossibleMoves, piece;
+
+        for (let r = 0; r <= this.MAX_ROW; r++) {
+            for (let c = 0; c <= this.MAX_COL; c++) {
+                piece = this.pieceAt(r, c);
+                // For every piece on the chessboard...
+                if (piece !== EMPTY_CELL) {
+                    // ...owned by a specific player...
+                    if (piece.owner === player) {
+                        // Get all possible moves for the piece...
+                        arrPossibleMoves = this.getPossibleMovesForPiece(r, c);
+                        for (let i = 0; i < arrPossibleMoves.length; i++) {
+                            // If this piece has a legal move...
+                            if(!arrPossibleMoves[i].putsOwnKingInCheck) {
+                                return true;
                             }
                         }
                     }
@@ -926,35 +958,6 @@ function getHTMLCellByCoords(row, col) {
     return document.getElementById(coordsToId(row, col));
 }
 
-/**
- * Returns whether a player has legal moves.
- * @param {*} player Player to check.
- */
-function hasLegalMoves(player) {
-    let arrPossibleMoves;
-    let piece;
-    for (let r = 0; r <= chess.MAX_ROW; r++) {
-        for (let c = 0; c <= chess.MAX_COL; c++) {
-            piece = chess.pieceAt(r, c);
-            // For every piece on the chessboard...
-            if (piece !== EMPTY_CELL) {
-                // ...owned by a specific player...
-                if (piece.owner === player) {
-                    // Get all possible moves for the piece...
-                    arrPossibleMoves = chess.getPossibleMovesForPiece(r, c);
-                    for (let i = 0; i < arrPossibleMoves.length; i++) {
-                        // If this piece has a legal move...
-                        if(!arrPossibleMoves[i].putsOwnKingInCheck) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return false;
-}
 
 /** Returns the coordinates of the king of the specified color. */
 function getKingPosition(player) {
