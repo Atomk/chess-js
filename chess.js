@@ -105,6 +105,10 @@ class Chess {
         this.selectedPiece = { row: -1, col: -1 };
     }
 
+    // ******************
+    //     CHESSBOARD
+    // ******************
+
     /** Returns true if the row and column indexes passed as arguments
      * are in-bounds in the chessboard matrix. */
     inBounds(row, col) {
@@ -128,6 +132,10 @@ class Chess {
         }
     }
 
+    // ******************
+    //   TURN HANDLING
+    // ******************
+
     changeTurn() {
         this.gameState = GameStateEnum.SelectPiece;
         this.activePlayer = this.getEnemy(this.activePlayer);
@@ -146,9 +154,9 @@ class Chess {
         return this.aiEnabled && this.activePlayer === this.aiColor;
     }
 
-    // *******************
-    //   PIECES MOVEMENT
-    // *******************
+    // ****************************
+    //   PIECES MOVEMENT HANDLING
+    // ****************************
 
     /**
      * Returns an array representing all the possible moves for a specific piece.
@@ -210,6 +218,10 @@ class Chess {
 
         return kingInCheck;
     }
+
+    // *******************
+    //   PIECES MOVEMENT
+    // *******************
 
     getPawnMoves(row, col) {
         let pieceToMove = this.pieceAt(row, col);
