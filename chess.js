@@ -529,6 +529,8 @@ class Chess {
         return arrMoves;
     }
 
+    // TODO: this does not use pieceAt
+    // TODO: measure performance between pieceAt and getType(r, c) and getOwner(r, c) and using an object matrix instead of string matrix
     getRookMoves(row, col) {
         let arrMoves = [];
         let pieceToMove = this.pieceAt(row, col);
@@ -601,7 +603,7 @@ class Chess {
         let arrMoves = [];
         let pieceToMove = this.pieceAt(row, col);
         let r, c;
-            
+
         r = row-1;
         if(r >= 0) {
             // Up
@@ -757,6 +759,7 @@ function handleMenuFormSubmit(event) {
     
     initUI();
 
+    // TODO this should be done by Chess class, but UI have to be initialized first...
     if(chess.isAITurn())
         performAITurn(chess.activePlayer);
 }
@@ -816,7 +819,7 @@ function createChessboardTableHTML(numRows, numCols) {
     return table;
 }
 
-    // Retrieves row and column index from the clicked cell's id
+// Retrieves row and column index from the clicked cell's id
 function handleHTMLCellClick(e) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
     let idArray = e.currentTarget.id.split("-");
@@ -826,6 +829,9 @@ function handleHTMLCellClick(e) {
     chess.handleCellSelected(row, col);
 }
 
+// ***********************
+//      UI HANDLERS
+// ***********************
 
 function handleSelectedOwnPiece(row, col, possibleMoves) {
     //console.log(`Selected cell ${row}-${col}. Piece type: ${pieceAt(row, col).type}`);
@@ -885,6 +891,18 @@ function handleTurnEnd(activePlayer, turnEndType) {
     }
 }
 
+// ***********************
+//      UI HELPERS
+// ***********************
+
+/** Shows a message saying which player should move. */
+function setPlayerTurnText(player) {
+    if(player === PlayerEnum.White)
+        messageTurnElem.innerText = "⚪ White's turn ⚪";
+    else
+        messageTurnElem.innerText = "⚫ Black's turn ⚫";
+}
+
 function setSelectionMarkerActive(row, col, display) {
     if(!chess.inBounds(row, col)) {
         console.error("Invalid arguments.");
@@ -898,15 +916,8 @@ function setSelectionMarkerActive(row, col, display) {
         cellElement.classList.remove("cell-selected");
 }
 
-/** Shows a message saying which player should move. */
-function setPlayerTurnText(player) {
-    if(player === PlayerEnum.White)
-        messageTurnElem.innerText = "⚪ White's turn ⚪";
-    else
-        messageTurnElem.innerText = "⚫ Black's turn ⚫";
-}
-
-/** Allows to show/hide where a piece can be moved. */
+// TODO rename to highlightPossibleMoves or displayPossibleMoves
+/** Allows to highlight cells where a piece can be moved. */
 function setDisplayDestinationActive(arrPossibleMoves, display) {
     if (arrPossibleMoves.length > 0) {
         //console.log((display ? "Showing" : "Hiding") + " possible moves.");
@@ -958,6 +969,9 @@ function getHTMLCellByCoords(row, col) {
     return document.getElementById(coordsToId(row, col));
 }
 
+// ***********************
+//          AI
+// ***********************
 
 /** Returns the coordinates of the king of the specified color. */
 function getKingPosition(player) {
@@ -1023,6 +1037,7 @@ function performAITurn(aiColor) {
                             target = chess.pieceAt(move.row, move.col).type || EMPTY_CELL;
                             
                             moveValue = aiMoveValue[target];
+                            // TODO: king can never be captured...
                             // If the king can be captured, we don't care about consequences
                             if(target.type !== PieceTypeEnum.King) {
                                 // Discourage sacrificing pieces by moving on a "capturable" square
@@ -1055,7 +1070,6 @@ function performAITurn(aiColor) {
     console.log(`AI moves piece at ${bestMoveObj.pieceRow}-${bestMoveObj.pieceCol}`
         + ` to square ${bestMoveObj.targetRow}-${bestMoveObj.targetCol}. Move value: ${maxMoveValue}`)
 
-    // TODO should disable graphic functions like setSelectionMarkerActive when AI is playing its turn
     chess.handleCellSelected(bestMoveObj.pieceRow, bestMoveObj.pieceCol);
     chess.handleCellSelected(bestMoveObj.targetRow, bestMoveObj.targetCol);
 }
