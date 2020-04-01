@@ -684,7 +684,7 @@ function handleMenuFormSubmit(event) {
     document.getElementById("grid-container").classList.remove("hidden");
     document.getElementById("messages-container").classList.remove("hidden");
 
-    let choicePlayerColor, choiceAI, choiceChessboard;
+    let choicePlayerColor, choiceAIEnabled, choiceChessboard;
     // https://stackoverflow.com/a/26236365
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
     for(const input of form.elements) {
@@ -692,8 +692,8 @@ function handleMenuFormSubmit(event) {
             switch(input.name) {
                 case "options-opponent":
                     switch(input.id) {
-                        case "opponent-choice-human": choiceAI = false; break;
-                        case "opponent-choice-ai": choiceAI = true; break;
+                        case "opponent-choice-human": choiceAIEnabled = false; break;
+                        case "opponent-choice-ai": choiceAIEnabled = true; break;
                         default: console.error(`Option ${input.id} not recognized.`); break;
                     }
                     break;
@@ -721,7 +721,7 @@ function handleMenuFormSubmit(event) {
     }
 
     let aiColor = chess.getEnemy(choicePlayerColor);
-    chess.startGame(choiceChessboard, choiceAI, aiColor);
+    chess.startGame(choiceChessboard, choiceAIEnabled, aiColor);
     
     initUI();
 
