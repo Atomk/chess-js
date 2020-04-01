@@ -214,7 +214,7 @@ class Chess {
                 let piece = this.pieceAt(row, col);
                 if(piece.type === PieceTypeEnum.Pawn) {
                     let promotionWhite = (piece.owner === PlayerEnum.White && row === 0)
-                    let promotionBlack = (piece.owner === PlayerEnum.Black && row === MAX_ROW);
+                    let promotionBlack = (piece.owner === PlayerEnum.Black && row === this.MAX_ROW);
                     if(promotionWhite || promotionBlack) {
                         let promotionType = PieceTypeEnum.Queen;
                         // TODO allow choosing what piece to promote to
@@ -324,8 +324,8 @@ class Chess {
         let arrPossibleMoves;
         let enemyRow, enemyCol;
 
-        for (let r = 0; r <= MAX_ROW; r++) {
-            for (let c = 0; c <= MAX_COL; c++) {
+        for (let r = 0; r <= this.MAX_ROW; r++) {
+            for (let c = 0; c <= this.MAX_COL; c++) {
                 // For every piece on the chessboard...
                 if (this.pieceAt(r, c) !== EMPTY_CELL) {
                     // ...owned by the king's enemy...
@@ -376,7 +376,7 @@ class Chess {
                 }
             }
             // If cell forward-right has enemy
-            if(col < MAX_COL) {
+            if(col < this.MAX_COL) {
                 targetCell = this.pieceAt(r, col+1);
                 if(targetCell !== EMPTY_CELL && targetCell.owner !== pieceToMove.owner) {
                     arrMoves.push(new PossibleMove(r, col+1, true));
@@ -389,7 +389,7 @@ class Chess {
                 arrMoves.push(new PossibleMove(r, col, false));
     
                 // TODO This will have to be changed when implementing custom chessboard
-                let startingRow = (pieceToMove.owner === PlayerEnum.White) ? MAX_ROW-1 : 1;
+                let startingRow = (pieceToMove.owner === PlayerEnum.White) ? this.MAX_ROW-1 : 1;
                 
                 // If the pawn is at its starting position and has two free cells fprward
                 if(row === startingRow) {
@@ -504,7 +504,7 @@ class Chess {
     
         // Bottom
         r = row+1;
-        while(r <= MAX_ROW) {
+        while(r <= this.MAX_ROW) {
             // If cell is empty
             if(this.chessboard[r][col] === EMPTY_CELL) {
                 arrMoves.push(new PossibleMove(r, col, false));
@@ -536,7 +536,7 @@ class Chess {
     
         // Right
         c = col+1;
-        while(c <= MAX_COL) {
+        while(c <= this.MAX_COL) {
             if(this.chessboard[row][c] === EMPTY_CELL) {
                 arrMoves.push(new PossibleMove(row, c, false));
             } else {
@@ -592,7 +592,7 @@ class Chess {
     
             // Up right
             c = col+1;
-            if(c <= MAX_COL) {
+            if(c <= this.MAX_COL) {
                 if(this.pieceAt(r, c) === EMPTY_CELL) {
                     arrMoves.push(new PossibleMove(r, c, false));
                 } else if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
@@ -602,7 +602,7 @@ class Chess {
         }
     
         r = row+1;
-        if(r <= MAX_ROW) {
+        if(r <= this.MAX_ROW) {
             // Bottom
             c = col;
             if(this.pieceAt(r, c) === EMPTY_CELL) {
@@ -623,7 +623,7 @@ class Chess {
     
             // Bottom right
             c = col+1;
-            if(c <= MAX_COL) {
+            if(c <= this.MAX_COL) {
                 if(this.pieceAt(r, c) === EMPTY_CELL) {
                     arrMoves.push(new PossibleMove(r, c, false));
                 } else if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
@@ -644,7 +644,7 @@ class Chess {
         }
         // Right
         c = col+1;
-        if(c <= MAX_COL) {
+        if(c <= this.MAX_COL) {
             if(this.pieceAt(r, c) === EMPTY_CELL) {
                 arrMoves.push(new PossibleMove(r, c, false));
             } else if(this.pieceAt(r, c).owner !== pieceToMove.owner) {
@@ -660,8 +660,6 @@ let messageTurnElem;
 let messageWarningElem;
 
 let chess = new Chess();
-let MAX_COL;
-let MAX_ROW;
 
 document.body.onload = function() {
     messageTurnElem = document.getElementById("msg-turn");
@@ -724,9 +722,6 @@ function handleMenuFormSubmit(event) {
 
     let aiColor = chess.getEnemy(choicePlayerColor);
     chess.startGame(choiceChessboard, choiceAI, aiColor);
-
-    MAX_ROW = chess.MAX_ROW;
-    MAX_COL = chess.MAX_COL;
     
     initUI();
 
@@ -938,8 +933,8 @@ function getHTMLCellByCoords(row, col) {
 function hasLegalMoves(player) {
     let arrPossibleMoves;
     let piece;
-    for (let r = 0; r <= MAX_ROW; r++) {
-        for (let c = 0; c <= MAX_COL; c++) {
+    for (let r = 0; r <= chess.MAX_ROW; r++) {
+        for (let c = 0; c <= chess.MAX_COL; c++) {
             piece = chess.pieceAt(r, c);
             // For every piece on the chessboard...
             if (piece !== EMPTY_CELL) {
@@ -964,8 +959,8 @@ function hasLegalMoves(player) {
 /** Returns the coordinates of the king of the specified color. */
 function getKingPosition(player) {
     let piece;
-    for (let r = 0; r <= MAX_ROW; r++) {
-        for (let c = 0; c <= MAX_COL; c++) {
+    for (let r = 0; r <= chess.MAX_ROW; r++) {
+        for (let c = 0; c <= chess.MAX_COL; c++) {
             piece = chess.pieceAt(r, c);
             if (piece !== EMPTY_CELL) {
                 if (piece.owner === player) {
@@ -1012,8 +1007,8 @@ function performAITurn(aiColor) {
     let aiPossibleMoves = [];
     let moveValue, maxMoveValue = -100;
 
-    for (let r = 0; r <= MAX_ROW; r++) {
-        for (let c = 0; c <= MAX_COL; c++) {
+    for (let r = 0; r <= chess.MAX_ROW; r++) {
+        for (let c = 0; c <= chess.MAX_COL; c++) {
             piece = chess.pieceAt(r, c);
             if (piece !== EMPTY_CELL) {
                 if (piece.owner === aiColor) {
@@ -1070,8 +1065,8 @@ function canSquareBeCaptured(row, col, player) {
 
     let possibleMoves;
 
-    for (let r = 0; r <= MAX_ROW; r++) {
-        for (let c = 0; c <= MAX_COL; c++) {
+    for (let r = 0; r <= chess.MAX_ROW; r++) {
+        for (let c = 0; c <= chess.MAX_COL; c++) {
             // For every piece on the chessboard...
             if (chess.pieceAt(r, c) !== EMPTY_CELL) {
                 // ...owned by the specified player...
