@@ -24,8 +24,12 @@ The chess game everyone knows and loves, in vanilla JavaScript. [Try it out!](ht
 
 ## To-do
 - Button to restart game on gameover (stalemate, checkmate), with same settings
-- Use a `<select>` for the chessboard selection
-- Improve styling (font, chessboard colors, menu...)
+- Improve menu styling
+    - Better dropdown
+    - Big emoji buttons instead of radio buttons
+    - Show above chessboard with overlay, so user knows the game is still there
+- Responsive chessboard
+- Allow to select AI strength
 - Decouple Chess class from UI functions
 - SVG icons for more consistency across browsers
 - https://en.wikipedia.org/wiki/Promotion_(chess)
