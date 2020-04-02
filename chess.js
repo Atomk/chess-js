@@ -798,7 +798,7 @@ function initUI() {
     gridContainer.appendChild(table);
 
     setPlayerTurnText(chess.activePlayer);
-    messageWarningElem = "";
+    messageWarningElem.innerText = "";
 }
 
 function createChessboardTableHTML(numRows, numCols) {
