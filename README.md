@@ -24,7 +24,6 @@ The chess game everyone knows and loves, in vanilla JavaScript. [Try it out!](ht
 
 ## To-do
 - Button to restart game on gameover (stalemate, checkmate), with same settings
-- Start game without menu, let user open the menu during play
 - Use a `<select>` for the chessboard selection
 - Improve styling (font, chessboard colors, menu...)
 - Decouple Chess class from UI functions

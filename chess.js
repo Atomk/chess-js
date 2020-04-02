@@ -693,6 +693,10 @@ class Chess {
     }
 }
 
+let optionsForm;
+let btnMenuOpen
+let btnMenuClose
+let gridContainer;
 let messageTurnElem;
 let messageWarningElem;
 
@@ -701,6 +705,15 @@ let chess = new Chess();
 document.body.onload = function() {
     messageTurnElem = document.getElementById("msg-turn");
     messageWarningElem = document.getElementById("msg-warning");
+    gridContainer = document.getElementById("grid-container");
+
+    optionsForm = document.querySelector("form");
+    btnMenuOpen = document.getElementById("btn-menu-open");
+    btnMenuClose = document.getElementById("btn-menu-close");
+    
+    optionsForm.onsubmit = handleMenuFormSubmit;
+    btnMenuOpen.onclick = () => { setOptionsFormActive(true); };
+    btnMenuClose.onclick = () => { setOptionsFormActive(false); };
     
     document.getElementById("opponent-choice-human").onclick = () => {
         document.getElementById("menu-section-color").classList.add("hidden");
@@ -708,18 +721,29 @@ document.body.onload = function() {
     document.getElementById("opponent-choice-ai").onclick = () => {
         document.getElementById("menu-section-color").classList.remove("hidden");
     };
+}
 
-    document.querySelector("form").onsubmit = handleMenuFormSubmit;
+function setOptionsFormActive(display) {
+    if(display) {
+        btnMenuOpen.classList.add("hidden");
+        btnMenuClose.classList.remove("hidden");
+        optionsForm.classList.remove("hidden");
+        gridContainer.classList.add("hidden");
+        document.getElementById("messages-container").classList.add("hidden");
+    } else {
+        btnMenuOpen.classList.remove("hidden");
+        btnMenuClose.classList.add("hidden");
+        optionsForm.classList.add("hidden");
+        gridContainer.classList.remove("hidden");
+        document.getElementById("messages-container").classList.remove("hidden");
+    }
 }
 
 function handleMenuFormSubmit(event) {
     event.preventDefault();
 
     let form = event.currentTarget;
-    form.classList.add("hidden");
-
-    document.getElementById("grid-container").classList.remove("hidden");
-    document.getElementById("messages-container").classList.remove("hidden");
+    setOptionsFormActive(false);
 
     let choicePlayerColor, choiceAIEnabled, choiceChessboard;
     // https://stackoverflow.com/a/26236365
@@ -769,9 +793,12 @@ function handleMenuFormSubmit(event) {
 function initUI() {
     // TODO: chessboard.numRows
     let table = createChessboardTableHTML(chess.numRows, chess.numCols);
-    document.getElementById("grid-container").appendChild(table);
+    // Makes sure the element is empty when restarting game
+    gridContainer.innerHTML = "";
+    gridContainer.appendChild(table);
 
     setPlayerTurnText(chess.activePlayer);
+    messageWarningElem = "";
 }
 
 function createChessboardTableHTML(numRows, numCols) {
