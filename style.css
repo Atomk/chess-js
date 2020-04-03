@@ -194,19 +194,20 @@ td {
 }
 .piece-white {
     color: #eee;
-    text-shadow: 0 0 3px #000;
+    /* https://stackoverflow.com/a/4919231 */
+    text-shadow: -1px -1px 1px #865, 1px -1px 1px #865, -1px 1px 1px #865, 1px 1px 1px #865;
 }
 .piece-black {
     color: #222;
-    text-shadow: 0 0 3px #fff;
+    text-shadow: -1px -1px 1px #fed, 1px -1px 1px #fed, -1px 1px 1px #fed, 1px 1px 1px #fed;
 }
 
 /* Chessboard colors */
 .cell-black {
-    background-color: #888;
+    background-color: #af8c77;
 }
 .cell-white {
-    background-color: #dadada;
+    background-color: #ebd5be;
 }
 
 /* Creates a blue border around the piece that was selected  */
