@@ -20,6 +20,11 @@ the pieces by mistake, since they're basically text
 https://stackoverflow.com/a/4407335 */
 .noselect {
     cursor: default;
+    
+    /* Disable Wekit blue higlight - https://stackoverflow.com/a/29961714 */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+
     -webkit-touch-callout: none;    /* iOS Safari */
     -webkit-user-select: none;      /* Safari */
     -khtml-user-select: none;       /* Konqueror HTML */
