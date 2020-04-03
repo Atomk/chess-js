@@ -40,23 +40,23 @@
     <form id="options" class="center-block" action="javascript:void(0);">
         <div>
             <h2>Opponent</h2>
-            <input type="radio" id="opponent-choice-human" name="options-opponent">
+            <input type="radio" id="opponent-choice-human" name="options-opponent" class="radio-emoji">
             <!-- 🤼🧠👤👥 -->
-            <label for="opponent-choice-human">👤 Human</label><br>
-            <input type="radio" id="opponent-choice-ai" name="options-opponent" checked>
-            <label for="opponent-choice-ai">💻 Computer</label>
+            <label for="opponent-choice-human" aria-label="Human">👤</label>
+            <input type="radio" id="opponent-choice-ai" name="options-opponent" class="radio-emoji" checked>
+            <label for="opponent-choice-ai" aria-label="AI">💻</label>
         </div>
         <div id="menu-section-color">
             <h2>Your color</h2>
-            <input type="radio" id="color-choice-white" name="options-color" checked>
-            <label for="color-choice-white">⚪ White</label><br>
-            <input type="radio" id="color-choice-black" name="options-color">
-            <label for="color-choice-black">⚫ Black</label>
+            <input type="radio" id="color-choice-white" name="options-color" class="radio-emoji" checked>
+            <label for="color-choice-white" aria-label="White">⚪</label>
+            <input type="radio" id="color-choice-black" name="options-color" class="radio-emoji">
+            <label for="color-choice-black" aria-label="Black">⚫</label>
         </div>
         <div>
             <h2 class="relative">
                 <label for="options-chessboard">Chessboard</label>
-                <a href="https://en.wikipedia.org/wiki/Minichess" target="_blank" class="title-info">More info</a>
+                <a href="https://en.wikipedia.org/wiki/Minichess" target="_blank" class="title-info">info</a>
             </h2>
             <select name="options-chessboard">
                 <option value="chessboard-standard">8x8 standard</option>
