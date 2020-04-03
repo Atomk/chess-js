@@ -38,7 +38,7 @@ piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Bishop] = "♝";
 piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Rook] = "♜";
 piecesUnicode[PlayerEnum.Black][PieceTypeEnum.King] = "♚";
 piecesUnicode[PlayerEnum.Black][PieceTypeEnum.Queen] = "♛";
-Object.freeze(piecesUnicode);
+deepFreeze(piecesUnicode);
 
 /** Contains the playable chessboard configurations. */
 const chessboardsList = {
@@ -75,7 +75,7 @@ const chessboardsList = {
         ["r1", "q1", "k1", "r1"]
     ]
 };
-Object.freeze(chessboardsList);
+deepFreeze(chessboardsList);
 
 /** Represents an empty cell in a chessboard matrix. */
 const EMPTY_CELL = "  ";
@@ -721,6 +721,22 @@ document.body.onload = function() {
     document.getElementById("opponent-choice-ai").onclick = () => {
         document.getElementById("menu-section-color").classList.remove("hidden");
     };
+}
+
+/** Makes an object completely immutable. */
+// Object.freeze() works on an object's properties,
+// but if the properties are also objects they're still mutable.
+// For example, if a chessboard matrix if frozen,
+// chessboard[0] is immutable, but chessboard[0][0] is not.
+// Note: arrays in JS are an extension of (and in fact are) objects
+function deepFreeze(obj) {
+    if(typeof(obj) !== "object")
+        return;
+
+    Object.freeze(obj);
+    Object.keys(obj).forEach((key) => {
+        deepFreeze(obj[key]);
+    });
 }
 
 function setOptionsFormActive(display) {
