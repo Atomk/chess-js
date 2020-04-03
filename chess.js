@@ -739,6 +739,23 @@ function deepFreeze(obj) {
     });
 }
 
+/** Creates a mutable copy of a matrix frozen with deepFreeze(). */
+// Using slice() returns an "unfrozen" copy of an array,
+// but if deepFreeze was used, its properties (elements) are still frozen.
+// Returns a copy because there's no built-in way to "unfreeze" an object.
+function getMatrixUnfrozenCopy(chessboard) {
+    let matrix = [];
+
+    chessboard.forEach((row, i) => {
+        matrix.push([]);
+        row.forEach((col) => {
+            matrix[i].push(col);
+        });
+    });
+
+    return matrix;
+}
+
 function setOptionsFormActive(display) {
     if(display) {
         btnMenuOpen.classList.add("hidden");
@@ -797,8 +814,11 @@ function handleMenuFormSubmit(event) {
     }
 
     let aiColor = chess.getEnemy(choicePlayerColor);
-    chess.startGame(choiceChessboard, choiceAIEnabled, aiColor);
-    
+    // arrays are a reference type, we want to pass a copy
+    // Since the original chessboardList object is deeply frozen, slice() is not enough
+    let mutableChessboard = getMatrixUnfrozenCopy(choiceChessboard);
+    chess.startGame(mutableChessboard, choiceAIEnabled, aiColor);
+
     initUI();
 
     // TODO this should be done by Chess class, but UI have to be initialized first...
