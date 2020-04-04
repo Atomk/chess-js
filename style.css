@@ -210,6 +210,12 @@ td {
     background-color: #ebd5be;
 }
 
+/* Makes it easier to understand which
+cells can be interacted with */
+.cell-selectable {
+    cursor: pointer;
+}
+
 /* Creates a blue border around the piece that was selected  */
 .cell-selected {
     position: relative;

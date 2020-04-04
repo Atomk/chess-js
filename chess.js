@@ -157,12 +157,17 @@ class Chess {
     // ******************
 
     changeTurn() {
+        if(!this.isAITurn())
+            setPlayerPiecesSelectable(this.activePlayer, false);
+
         this.gameState = GameStateEnum.SelectPiece;
         this.activePlayer = this.getEnemy(this.activePlayer);
         setPlayerTurnText(this.activePlayer);
     
         if(this.isAITurn())
             performAITurn(this.activePlayer);
+        else
+            setPlayerPiecesSelectable(this.activePlayer, true);
     }
 
     isAITurn() {
@@ -980,6 +985,20 @@ function setSelectionMarkerActive(row, col, display) {
         cellElement.classList.add("cell-selected");
     else
         cellElement.classList.remove("cell-selected");
+}
+
+function setPlayerPiecesSelectable(player, selectable) {
+    for(let r = 0; r <= chess.MAX_ROW; r++) {
+        for(let c = 0; c <= chess.MAX_COL; c++) {
+            let piece = chess.pieceAt(r, c);
+            if(piece != EMPTY_CELL && piece.owner === player) {
+                if(selectable)
+                    getHTMLCellByCoords(r, c).classList.add("cell-selectable");
+                else
+                    getHTMLCellByCoords(r, c).classList.remove("cell-selectable");
+            }
+        }
+    }
 }
 
 // TODO rename to highlightPossibleMoves or displayPossibleMoves
