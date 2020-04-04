@@ -162,8 +162,14 @@ class Chess {
 
         this.gameState = GameStateEnum.SelectPiece;
         this.activePlayer = this.getEnemy(this.activePlayer);
+
+        this.startActivePlayerTurn();
+    }
+
+    // TODO: this should not be inside the Chess class (apart from AI turn stuff)
+    startActivePlayerTurn() {
         setPlayerTurnText(this.activePlayer);
-    
+
         if(this.isAITurn())
             performAITurn(this.activePlayer);
         else
@@ -827,8 +833,7 @@ function handleMenuFormSubmit(event) {
     initUI();
 
     // TODO this should be done by Chess class, but UI have to be initialized first...
-    if(chess.isAITurn())
-        performAITurn(chess.activePlayer);
+    chess.startActivePlayerTurn();
 }
 
 function initUI() {
@@ -837,8 +842,7 @@ function initUI() {
     // Makes sure the element is empty when restarting game
     gridContainer.innerHTML = "";
     gridContainer.appendChild(table);
-
-    setPlayerTurnText(chess.activePlayer);
+    
     messageWarningElem.innerText = "";
 }
 
